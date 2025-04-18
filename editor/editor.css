@@ -2,28 +2,60 @@ body {
   margin: 0;
   font-family: sans-serif;
   background-color: #f5f1e8;
+  display: flex;
+  height: 100vh;
 }
 
 #toolbar {
+  width: 220px;
+  background: #ffffff;
   padding: 1rem;
-  background: #fff;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
 }
 
-#addWall {
+.section {
+  margin-bottom: 1.5rem;
+}
+
+button {
+  display: block;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem 1rem;
   background-color: #a67c52;
   color: white;
-  padding: 0.6rem 1.2rem;
   border: none;
   border-radius: 5px;
   cursor: pointer;
 }
 
-#addWall:hover {
+button:hover {
   background-color: #8b653d;
 }
 
 #stage-container {
+  flex-grow: 1;
+  height: 100vh;
+  position: relative;
+}
+
+input[type="number"] {
   width: 100%;
-  height: calc(100vh - 60px);
+  padding: 0.3rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.hidden {
+  display: none;
+}
+
+.measure-label {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.8);
+  font-size: 12px;
+  padding: 2px 5px;
+  border-radius: 4px;
+  pointer-events: none;
+  border: 1px solid #aaa;
 }
