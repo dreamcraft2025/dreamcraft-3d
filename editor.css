@@ -1,0 +1,29 @@
+body {
+  margin: 0;
+  font-family: sans-serif;
+  background-color: #f5f1e8;
+}
+
+#toolbar {
+  padding: 1rem;
+  background: #fff;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+#addWall {
+  background-color: #a67c52;
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#addWall:hover {
+  background-color: #8b653d;
+}
+
+#stage-container {
+  width: 100%;
+  height: calc(100vh - 60px);
+}
