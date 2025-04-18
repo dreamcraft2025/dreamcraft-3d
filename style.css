@@ -70,6 +70,12 @@ main {
     border-radius: 5px;
     text-decoration: none;
     font-weight: bold;
+    transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.explore-button:hover {
+    background: #8b653d;
+    transform: scale(1.05);
 }
 
 footer {
