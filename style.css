@@ -38,6 +38,12 @@ nav a {
     text-decoration: none;
     color: #444;
     font-weight: 500;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+nav a:hover {
+    color: #a67c52;
+    transform: scale(1.08);
 }
 
 nav .btn {
