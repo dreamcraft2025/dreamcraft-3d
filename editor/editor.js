@@ -13,35 +13,35 @@ let transformer = null;
 let stickerLeft = null;
 let stickerRight = null;
 
-// Crea un muro
 function createWall(x = 50, y = 50, width = 200, height = 15) {
   const wall = new Konva.Rect({
     x,
     y,
     width,
     height,
-    fill: '#6b4c2b',
+    fill: '#555555', // Color base del muro
     draggable: true,
-    name: 'wall',
+    name: 'wall'
   });
 
-  // Eventos de hover
+  // Hover: cambiar color al pasar el ratón
   wall.on('mouseover', () => {
-    wall.fill('#8b5e3c');
+    if (wall !== selected) wall.fill('#777777'); // Gris más claro
     layer.draw();
-    showStickers(wall);
   });
 
+  // Salida del ratón: volver al color base
   wall.on('mouseout', () => {
-    if (wall !== selected) wall.fill('#6b4c2b');
-    hideStickers();
+    if (wall !== selected) wall.fill('#555555');
     layer.draw();
   });
 
+  // Selección del muro
   wall.on('click', () => {
     selectObject(wall);
   });
 
+  // Actualizar medidas al mover o transformar
   wall.on('dragend transformend', () => {
     updateMeasurement();
     updateStickerPositions();
@@ -49,6 +49,7 @@ function createWall(x = 50, y = 50, width = 200, height = 15) {
 
   layer.add(wall);
   layer.draw();
+
   return wall;
 }
 
@@ -58,37 +59,34 @@ document.getElementById('addWall').addEventListener('click', () => {
   selectObject(newWall);
 });
 
-// Seleccionar muro
 function selectObject(obj) {
   selected = obj;
 
+  // Aplicar color de selección
+  selected.fill('#999999');
+  layer.draw();
+
+  // Mostrar herramientas
   document.getElementById('object-tools').classList.remove('hidden');
+
+  // Mostrar medidas en los inputs
   document.getElementById('widthInput').value = Math.round(obj.height());
   document.getElementById('lengthInput').value = Math.round(obj.width());
 
-  // Quitar transformer anterior
+  // Quitar transformer anterior si hay
   if (transformer) transformer.destroy();
 
-  // Crear transformer solo para mover
+  // Crear nuevo transformer
   transformer = new Konva.Transformer({
     nodes: [obj],
-    enabledAnchors: [],
+    enabledAnchors: []
   });
-
   layer.add(transformer);
   layer.draw();
 
-  updateMeasurement();
-  updateStickerPositions();
+  showStickers(obj);
+}
 
-  // Input de ancho
-  document.getElementById('widthInput').oninput = (e) => {
-    const newHeight = parseInt(e.target.value);
-    if (!isNaN(newHeight)) {
-      obj.height(newHeight);
-      layer.draw();
-      updateMeasurement();
-    }
   };
 
   // Input de largo
