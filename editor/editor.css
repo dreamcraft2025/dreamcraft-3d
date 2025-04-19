@@ -1,19 +1,29 @@
 body {
   margin: 0;
   font-family: sans-serif;
-  background-color: #f5f1e8;
+  background-color: #f0f0f0;
   display: flex;
   height: 100vh;
   overflow: hidden;
 }
 
+/* 🟫 Fondo más elegante y muros grises */
+#stage-container {
+  flex-grow: 1;
+  height: 100vh;
+  position: relative;
+  overflow: auto;
+  background-color: #f0f0f0;
+}
+
 #toolbar {
-  width: 220px;
+  width: 240px;
   background: #ffffff;
   padding: 1rem;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
   overflow-y: auto;
-  flex-shrink: 0;
+  z-index: 10;
+  transition: all 0.3s ease;
 }
 
 .section {
@@ -23,7 +33,7 @@ body {
 button {
   display: block;
   margin-bottom: 0.5rem;
-  padding: 0.5rem 1rem;
+  padding: 0.6rem 1rem;
   background-color: #a67c52;
   color: white;
   border: none;
@@ -36,27 +46,17 @@ button:hover {
   background-color: #8b653d;
 }
 
-#stage-container {
-  flex-grow: 1;
-  height: 100vh;
-  position: relative;
-}
-
 input[type="number"] {
   width: 100%;
-  padding: 0.3rem;
+  padding: 0.4rem;
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 0.9rem;
 }
 
-.hidden {
-  display: none;
-}
-
 .measure-label {
   position: absolute;
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.9);
   font-size: 12px;
   padding: 2px 5px;
   border-radius: 4px;
@@ -64,45 +64,55 @@ input[type="number"] {
   border: 1px solid #aaa;
 }
 
-/* 🟢 ESTILOS RESPONSIVOS PARA MÓVIL */
+/* Botón menú móvil */
+.hamburger {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 999;
+  background: #a67c52;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 0.6rem 1rem;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: none;
+}
+
+/* Esconder panel */
+.hidden {
+  display: none !important;
+}
+
+/* 🎯 VISTA MÓVIL */
 @media (max-width: 768px) {
   body {
     flex-direction: column;
-    height: auto;
   }
 
   #toolbar {
     width: 100%;
-    box-shadow: none;
-    border-bottom: 1px solid #ddd;
-    padding: 0.8rem 1rem;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.8rem;
+    position: absolute;
+    top: 60px;
+    left: 0;
+    padding: 1rem;
+    background: #ffffff;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    z-index: 99;
   }
 
-  .section {
+  .hamburger {
+    display: block;
+  }
+
+  button, input[type="number"] {
+    font-size: 1rem;
     width: 100%;
-    margin-bottom: 0.5rem;
-  }
-
-  button {
-    width: 100%;
-    font-size: 0.9rem;
-    padding: 0.5rem;
-  }
-
-  input[type="number"] {
-    font-size: 0.85rem;
-    padding: 0.4rem;
   }
 
   #stage-container {
-    height: calc(100vh - 230px); /* Ajuste para dejar espacio arriba */
+    height: calc(100vh - 60px);
     width: 100%;
-  }
-
-  .measure-label {
-    font-size: 11px;
   }
 }

@@ -8,7 +8,11 @@
   <script src="https://cdn.jsdelivr.net/npm/konva@9/konva.min.js"></script>
 </head>
 <body>
-  <div id="toolbar">
+  <!-- Botón de menú móvil -->
+  <button id="menu-toggle" class="hamburger">☰</button>
+
+  <!-- Panel de herramientas -->
+  <div id="toolbar" class="hidden">
     <div class="section">
       <button id="addWall">Añadir muro</button>
     </div>
@@ -23,7 +27,16 @@
       <input type="number" id="lengthInput" />
     </div>
   </div>
+
   <div id="stage-container"></div>
   <script src="editor.js"></script>
+  <script>
+    // Mostrar u ocultar el menú en móvil
+    const toggle = document.getElementById('menu-toggle');
+    const toolbar = document.getElementById('toolbar');
+    toggle.addEventListener('click', () => {
+      toolbar.classList.toggle('hidden');
+    });
+  </script>
 </body>
 </html>
