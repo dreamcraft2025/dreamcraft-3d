@@ -50,10 +50,17 @@
       align-items: center;
       justify-content: space-between;
       padding: 4rem 2rem;
-      background-color: #f9f7f3;
+      background-image: url('fondo-portada.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      color: white;
     }
     .hero-text {
       max-width: 50%;
+      background-color: rgba(0, 0, 0, 0.4);
+      padding: 2rem;
+      border-radius: 12px;
     }
     .hero-text h1 {
       font-size: 3rem;
@@ -68,21 +75,12 @@
       font-size: 1rem;
       cursor: pointer;
     }
-    .hero-image {
-      max-width: 45%;
-    }
-    .hero-image img {
-      width: 100%;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    }
-
     @media (max-width: 768px) {
       .hero {
         flex-direction: column;
         text-align: center;
       }
-      .hero-text, .hero-image {
+      .hero-text {
         max-width: 100%;
       }
       header {
@@ -108,9 +106,6 @@
     <div class="hero-text">
       <h1>Dale vida a tus sueños</h1>
       <button class="btn-cta">Empezar</button>
-    </div>
-    <div class="hero-image">
-      <img src="https://images.unsplash.com/photo-1581092334734-425c02cafd0c" alt="Diseño de casa">
     </div>
   </section>
 </body>
