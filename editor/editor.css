@@ -59,13 +59,11 @@ input[type="number"] {
   font-size: 0.9rem;
   margin-bottom: 0.8rem;
 }
-
-/* CONTENEDOR DEL EDITOR */
 #stage-container {
-  flex-grow: 1;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
   position: relative;
-  background-color: #f2f2f2;
 }
 
 .hidden {

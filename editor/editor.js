@@ -1,6 +1,6 @@
 const stage = new Konva.Stage({
   container: 'stage-container',
-  width: window.innerWidth,
+ width: 3000,
   height: window.innerHeight
 });
 
