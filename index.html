@@ -2,46 +2,116 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DreamCraft 3D</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DreamCraft 3D</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f9f7f3;
+      color: #333;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem 2rem;
+      background-color: #fff;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+    header .logo {
+      font-weight: bold;
+      font-size: 1.5rem;
+      color: #444;
+    }
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+    nav a {
+      text-decoration: none;
+      color: #444;
+      font-weight: 500;
+    }
+    .btn-nav {
+      background-color: #d6bfa3;
+      color: white;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .hero {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      padding: 4rem 2rem;
+      background-color: #f9f7f3;
+    }
+    .hero-text {
+      max-width: 50%;
+    }
+    .hero-text h1 {
+      font-size: 3rem;
+      margin-bottom: 1.5rem;
+    }
+    .hero-text .btn-cta {
+      background-color: #c9a77c;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    .hero-image {
+      max-width: 45%;
+    }
+    .hero-image img {
+      width: 100%;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    @media (max-width: 768px) {
+      .hero {
+        flex-direction: column;
+        text-align: center;
+      }
+      .hero-text, .hero-image {
+        max-width: 100%;
+      }
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
 </head>
 <body>
-    <header>
-        <div class="logo">DreamCraft 3D</div>
-        <nav>
-            <ul>
-                <li><a href="#">Planos</a></li>
-                <li><a href="#">Diseños</a></li>
-                <li><a href="#">Sobre</a></li>
-                <li><a href="#">Ayuda</a></li>
-                <li><a href="#" class="btn">Empieza ahora</a></li>
-            </ul>
-        </nav>
-    </header>
-    <main>
-        <div class="hero">
-            <h1>Dale vida a tus sueños</h1>
-            <a href="editor/editor.html" class="explore-button">Empezar</a>
+  <header>
+    <div class="logo">DreamCraft 3D</div>
+    <nav>
+      <a href="#">Planos</a>
+      <a href="#">Diseños</a>
+      <a href="#">Sobre</a>
+      <a href="#">Ayuda</a>
+      <button class="btn-nav">Empezar ahora</button>
+    </nav>
+  </header>
 
-        </div>
-    </main>
-
-    <section class="about">
-  <div class="container">
-    <h2>¿Qué es DreamCraft 3D?</h2>
-    <p>
-      DreamCraft 3D es un espacio creativo donde tus ideas toman forma.
-      Aquí podrás visualizar planos, explorar diseños, y construir tus sueños
-      paso a paso. Nuestro objetivo es ayudarte a crear entornos únicos, a tu gusto,
-      y motivarte en cada etapa del proceso.
-    </p>
-  </div>
-</section>
-
-    <footer>
-        <p>✨ Hecho con pasión por DreamCraft 3D · Tu mundo, tu diseño.</p>
-    </footer>
+  <section class="hero">
+    <div class="hero-text">
+      <h1>Dale vida a tus sueños</h1>
+      <button class="btn-cta">Empezar</button>
+    </div>
+    <div class="hero-image">
+      <img src="https://images.unsplash.com/photo-1581092334734-425c02cafd0c" alt="Diseño de casa">
+    </div>
+  </section>
 </body>
 </html>
