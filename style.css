@@ -65,15 +65,16 @@ main {
     padding: 2rem;
     min-height: 100vh;
 }
-.hero {
-  background-image: url('fondo-portada.jpg');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+
+.hero h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: #6b4c2b;
+    background-color: rgba(255, 255, 255, 0.75); /* Fondo suave solo en el texto */
+    padding: 0.4rem 1rem;
+    border-radius: 6px;
+    display: inline-block;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* sombra ligera opcional */
 }
 
 .explore-button {
