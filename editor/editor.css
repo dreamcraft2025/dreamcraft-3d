@@ -128,3 +128,29 @@ input[type="number"] {
   margin-bottom: 1rem;
   cursor: pointer;
 }
+/* Estilo del panel lateral */
+#toolbar {
+  position: absolute;
+  top: 60px;
+  left: 10px;
+  width: 200px;
+  background-color: #f4f0e8;
+  padding: 10px;
+  border-radius: 6px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+  z-index: 999;
+}
+
+/* Mover el botón "Añadir muro" más a la derecha */
+#fixed-controls {
+  position: absolute;
+  top: 10px;
+  left: 220px; /* lo desplazamos hacia la derecha del panel */
+  z-index: 1000;
+}
+
+/* Si en el futuro querés ocultar el panel con JS */
+#toolbar.hidden {
+  transform: translateX(-220px);
+}
