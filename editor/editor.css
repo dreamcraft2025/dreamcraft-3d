@@ -277,16 +277,16 @@ input[type="number"] {
 }
 
 
-/* Panel lateral con animación suave y tamaño corregido */
+/* Corrección final: animación funcional y tamaño perfecto */
 #toolbar {
   position: absolute;
   top: 0;
   left: 0;
   width: 240px;
-  height: auto;
+  height: 100vh;
   background-color: #c9a77c !important;
-  transform: translateX(-100%);
-  transition: transform 0.7s ease-in-out;
+  transform: translateX(-260px);
+  transition: transform 0.5s ease-in-out;
   z-index: 1000;
   overflow-y: auto;
   padding: 1.2rem;
