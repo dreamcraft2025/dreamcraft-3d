@@ -248,3 +248,11 @@ function deselectObject() {
     selected = null;
     layer.draw();
   }
+// Ocultar el panel si se hace clic fuera de un muro
+stage.on('click', (e) => {
+  if (!e.target.hasName('wall')) {
+    deselectObject();
+    document.getElementById('toolbar').classList.remove('visible');
+    document.getElementById('object-tools').classList.add('hidden');
+  }
+});
