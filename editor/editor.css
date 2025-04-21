@@ -10,7 +10,7 @@ body {
 /* LATERAL IZQUIERDO */
 #toolbar {
   width: 240px;
-  background: #f5f5dc; /* beis claro */
+  background: #c9a77c; /* beis claro */
   padding: 1.2rem;
   box-shadow: 2px 0 8px rgba(0, 0, 0, 0.08);
   overflow-y: auto;
@@ -33,7 +33,7 @@ button {
   width: 100%;
   margin-bottom: 0.7rem;
   padding: 0.6rem 1rem;
-  background-color: #f5f5dc; /* beis claro */
+  background-color: #c9a77c; /* beis claro */
 color: #333;
   border: 1px solid #ccc;
   border-radius: 8px;
@@ -254,14 +254,14 @@ input[type="number"] {
   width: 100%;
 }
 #fixed-controls {
-  background-color: #f5f5dc; /* beige claro */
+  background-color: #c9a77c; /* beige claro */
 }
 #addWallBtn {
-  background-color: #f5f5dc; /* beis claro */
+  background-color: #c9a77c; /* beis claro */
   box-shadow: none; /* sin sombra */
   border: 1px solid #ccc;
   color: #000;
 }
 .side-panel {
-  background-color: #f5f5dc;
+  background-color: #c9a77c;
 }
