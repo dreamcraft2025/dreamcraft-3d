@@ -18,18 +18,18 @@ function createWall(x = 50, y = 50, width = 200, height = 15) {
     y,
     width,
     height,
-    fill: "#6b4c2b",
+    fill: "#333333",
     draggable: true,
     name: 'wall'
   });
 
   wall.on('mouseover', () => {
-    if (wall !== selected) wall.fill("#444"); // gris oscuro
+    if (wall !== selected) wall.fill("#333333"); // gris oscuro
     layer.draw();
   });
 
   wall.on('mouseout', () => {
-    if (wall !== selected) wall.fill("#444"); // gris oscuro
+    if (wall !== selected) wall.fill("#333333"); // gris oscuro
     hideStickers();
     layer.draw();
   });
