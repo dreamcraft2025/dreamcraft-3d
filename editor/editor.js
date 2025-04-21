@@ -270,10 +270,3 @@ stage.on('click', (e) => {
     layer.draw();
   }
 });
-
-
-window.addEventListener('DOMContentLoaded', () => {
-  setTimeout(() => {
-    document.getElementById('toolbar').classList.add('visible');
-  }, 50);
-});
