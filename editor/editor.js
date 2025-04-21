@@ -33,10 +33,10 @@ function createWall(x = 50, y = 50, width = 200, height = 15) {
     hideStickers();
     layer.draw();
   });
-
-  wall.on('click', () => {
-    selectObject(wall);
-  });
+    wall.on('click', () => {
+  selectObject(wall);
+  document.getElementById('toolbar').classList.add('visible');
+});
 
   wall.on('dragend transformend', () => {
     updateMeasurement();
@@ -236,3 +236,32 @@ function updateStickerPositions() {
     y: selected.y() + selected.height() / 2
   });
 }
+// Función para cerrar el panel lateral
+document.getElementById('close-toolbar').addEventListener('click', () => {
+  document.getElementById('toolbar').classList.remove('visible');
+  deselectObject();
+});
+
+// Función para desseleccionar
+function deselectObject() {
+  if (selected) {
+    selected.stroke(null);
+    selected = null;
+    layer.draw();
+  }
+    stage.on('click', (e) => {
+  // Si el clic no fue sobre un muro u otro objeto seleccionable
+  if (!e.target.hasName('wall')) {
+    if (transformer) {
+      transformer.destroy();
+      transformer = null;
+    }
+
+    selected = null;
+
+    // Ocultar herramientas
+    document.getElementById('toolbar').classList.remove('visible');
+    document.getElementById('object-tools').classList.add('hidden');
+    layer.draw();
+  }
+});

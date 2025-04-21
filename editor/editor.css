@@ -80,3 +80,62 @@ input[type="number"] {
   pointer-events: none;
   border: 1px solid #aaa;
 }
+/* Botón fijo arriba a la izquierda */
+#fixed-controls {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 20;
+}
+
+#addWall {
+  padding: 0.6rem 1.2rem;
+  background-color: #6b4c2b;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+}
+
+/* Panel lateral oculto por defecto */
+#toolbar {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 240px;
+  height: 100vh;
+  background: #ffffff;
+  padding: 1.2rem;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.08);
+  overflow-y: auto;
+  z-index: 10;
+}
+
+/* Mostrar el panel cuando esté activo */
+#toolbar.visible {
+  display: block;
+}
+
+/* Botón de cerrar (la X) */
+#close-toolbar {
+  text-align: right;
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  cursor: pointer;
+}
+#toolbar {
+  position: fixed;
+  left: -300px;
+  top: 0;
+  bottom: 0;
+  transition: left 0.3s ease;
+}
+
+#toolbar.visible {
+  left: 0;
+}
