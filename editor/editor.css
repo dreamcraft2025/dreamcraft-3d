@@ -265,3 +265,13 @@ input[type="number"] {
 .side-panel {
   background-color: #c9a77c;
 }
+
+
+#addWall {
+  background-color: #c9a77c !important;
+  color: white;
+}
+
+#toolbar {
+  background-color: #c9a77c !important;
+}
