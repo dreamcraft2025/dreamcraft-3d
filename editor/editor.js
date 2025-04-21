@@ -256,3 +256,4 @@ stage.on('click', (e) => {
     document.getElementById('object-tools').classList.add('hidden');
   }
 });
+}
