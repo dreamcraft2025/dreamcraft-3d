@@ -8,12 +8,16 @@
   <script src="https://cdn.jsdelivr.net/npm/konva@9/konva.min.js"></script>
 </head>
 <body>
+<!-- Botón siempre visible -->
+<div id="fixed-controls">
+  <button id="addWall">Añadir muro</button>
+</div>
 
-  <!-- PANEL LATERAL -->
-  <div id="toolbar">
-    <div class="section">
-      <button id="addWall">➕ Añadir muro</button>
-    </div>
+<!-- Panel lateral oculto al principio -->
+<div id="toolbar" class="visible">
+  <!-- Tus herramientas o botones -->
+  <button id="close-toolbar">Cerrar</button>
+</div>
     <div id="object-tools" class="section hidden">
       <h3>🧱 Muro seleccionado</h3>
       <button id="deleteObject">🗑 Eliminar</button>
