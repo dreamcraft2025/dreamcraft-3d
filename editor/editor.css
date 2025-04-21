@@ -205,3 +205,12 @@ input[type="number"] {
 #toolbar.visible {
   display: block; /* Se muestra cuando tiene la clase 'visible' */
 }
+/* === PANEL LATERAL MODERNO === */
+.panel {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 260px;
+  height: 100%;
+  background-color: #fdfcfb;
+  box-shadow: 2px 0 10
