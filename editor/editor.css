@@ -213,16 +213,16 @@ input[type="number"] {
   padding: 8px;
   font-size: 0.85rem;
   background-color: #f9f9f9;
-  border-radius: 8px 0 0 8px;
-  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
-  transform: translateX(-150%);
+  border-radius: 0 8px 8px 0;
+  box-shadow: 4px 0 12px rgba(0, 0, 0, 0.12);
+  transform: translateX(-300px); /* se mueve más lejos al ocultarse */
   opacity: 0;
-  transition: transform 0.5s ease-in-out, opacity 0.4s ease-in-out;
+  transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.6s ease;
   z-index: 999;
 }
 
 #toolbar.visible {
-  transform: translateX(0%);
+  transform: translateX(0);
   opacity: 1;
 }
 
