@@ -249,19 +249,3 @@ function deselectObject() {
     selected = null;
     layer.draw();
   }
-    stage.on('click', (e) => {
-  // Si el clic no fue sobre un muro u otro objeto seleccionable
-  if (!e.target.hasName('wall')) {
-    if (transformer) {
-      transformer.destroy();
-      transformer = null;
-    }
-
-    selected = null;
-
-    // Ocultar herramientas
-    document.getElementById('toolbar').classList.remove('visible');
-    document.getElementById('object-tools').classList.add('hidden');
-    layer.draw();
-  }
-});
