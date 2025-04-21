@@ -257,3 +257,16 @@ stage.on('click', (e) => {
   }
 });
 }
+// Ocultar el panel si se hace clic fuera del muro
+stage.on('click', (e) => {
+  if (e.target === stage || e.target === stage.findOne('Layer')) {
+    if (transformer) transformer.destroy();
+    hideStickers();
+    selected = null;
+
+    document.getElementById('object-tools').classList.add('hidden');
+    document.getElementById('toolbar').classList.remove('visible');
+
+    layer.draw();
+  }
+});
