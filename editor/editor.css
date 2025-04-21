@@ -154,3 +154,36 @@ input[type="number"] {
 #toolbar.hidden {
   transform: translateX(-220px);
 }
+/* === SOLUCIÓN DEL PROBLEMA DE MURO Y PANEL === */
+
+/* 1. El escenario ocupa toda la pantalla sin ser bloqueado */
+#stage-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1; /* Está debajo del panel */
+}
+
+/* 2. El panel lateral izquierdo flota con buen diseño */
+#toolbar {
+  position: absolute;
+  top: 60px;
+  left: 10px;
+  width: 200px;
+  background-color: #f4f0e8;
+  padding: 10px;
+  border-radius: 6px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+  z-index: 10; /* Está encima del escenario */
+}
+
+/* 3. El botón de "Añadir muro" se mueve a la derecha para no tapar el panel */
+#fixed-controls {
+  position: absolute;
+  top: 10px;
+  left: 220px; /* Separado del panel */
+  z-index: 20;
+}
