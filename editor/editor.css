@@ -277,32 +277,16 @@ input[type="number"] {
 }
 
 
-/* Animación para desplegar el panel lateral */
+/* Panel lateral con animación suave y tamaño corregido */
 #toolbar {
-  transform: translateX(-100%);
-  transition: transform 0.3s ease-in-out;
   position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  z-index: 10;
-}
-
-#toolbar.visible {
-  transform: translateX(0);
-}
-
-
-/* Panel lateral con animación de deslizamiento */
-#toolbar {
-  position: fixed;
   top: 0;
   left: 0;
   width: 240px;
-  height: 100%;
+  height: auto;
   background-color: #c9a77c !important;
   transform: translateX(-100%);
-  transition: transform 0.3s ease-in-out;
+  transition: transform 0.7s ease-in-out;
   z-index: 1000;
   overflow-y: auto;
   padding: 1.2rem;
