@@ -236,7 +236,6 @@ function updateStickerPositions() {
     y: selected.y() + selected.height() / 2
   });
 }
-// Función para cerrar el panel lateral
 document.getElementById('close-toolbar').addEventListener('click', () => {
   document.getElementById('toolbar').classList.remove('visible');
   deselectObject();
