@@ -34,7 +34,7 @@ function createWall(x = 50, y = 50, width = 200, height = 15) {
     layer.draw();
   });
     wall.on('click', () => {
-  seleccionarMuro(wall);
+  selectObject(wall);
   document.getElementById('toolbar').classList.add('visible');
 });
 
@@ -58,6 +58,7 @@ document.getElementById('addWall').addEventListener('click', () => {
 function selectObject(obj) {
   selected = obj;
 
+  document.getElementById('object-tools').classList.remove('hidden');
   document.getElementById('widthInput').value = Math.round(obj.height());
   document.getElementById('lengthInput').value = Math.round(obj.width());
 
@@ -266,87 +267,6 @@ stage.on('click', (e) => {
     document.getElementById('object-tools').classList.add('hidden');
     document.getElementById('toolbar').classList.remove('visible');
 
-    layer.draw();
-  }
-});
-// === CONTROL DEL PANEL LATERAL ===
-const toolbar = document.getElementById("toolbar");
-const cerrarPanelBtn = document.getElementById("cerrarPanel");
-
-function abrirPanel() {
-  toolbar.classList.remove("oculto");
-  setTimeout(() => toolbar.classList.add("visible"), 10);
-}
-
-function cerrarPanel() {
-  toolbar.classList.remove("visible");
-  setTimeout(() => toolbar.classList.add("oculto"), 400);
-}
-
-cerrarPanelBtn.addEventListener("click", cerrarPanel);
-
-// Mostrar el panel al seleccionar muro
-function seleccionarMuro(muro) {
-  selected = muro;
-
-  // Mostrar el panel
-  abrirPanel();
-
-  // Actualizar inputs con las medidas del muro
-  document.getElementById("altoInput").value = Math.round(muro.height());
-  document.getElementById("anchoInput").value = Math.round(muro.width());
-
-  // Mostrar transformador
-  if (transformer) transformer.destroy();
-
-  transformer = new Konva.Transformer({
-    nodes: [muro],
-    enabledAnchors: [],
-  });
-
-  layer.add(transformer);
-  layer.draw();
-}
-
-}
-
-// Deseleccionar muro al hacer clic fuera del muro
-stage.on("click", (e) => {
-  if (e.target === stage) {
-    cerrarPanel();
-    selected = null;
-  }
-});
-// === FUNCIONES DE LOS BOTONES DEL PANEL ===
-
-// Eliminar muro
-document.getElementById('eliminarBtn').addEventListener('click', () => {
-  if (selected) {
-    selected.destroy();
-    selected = null;
-    cerrarPanel();
-    layer.draw();
-  }
-});
-
-// Rotar muro 90°
-document.getElementById('rotarBtn').addEventListener('click', () => {
-  if (selected) {
-    const angle = selected.rotation() + 90;
-    selected.rotation(angle);
-    layer.draw();
-  }
-});
-
-// Duplicar muro
-document.getElementById('duplicarBtn').addEventListener('click', () => {
-  if (selected) {
-    const clone = selected.clone({
-      x: selected.x() + 30,
-      y: selected.y() + 30,
-    });
-    layer.add(clone);
-    seleccionarMuro(clone); // Abrir panel con el nuevo duplicado
     layer.draw();
   }
 });

@@ -14,24 +14,22 @@
 </div>
 
 <!-- Panel lateral oculto al principio -->
-<div id="toolbar" class="panel oculto">
-  <button id="cerrarPanel" class="cerrar-btn">Cerrar</button>
-  <h3><span class="icono-ladrillo">🧱</span> Muro seleccionado</h3>
+<div id="toolbar">
+  <!-- Tus herramientas o botones -->
+  <button id="close-toolbar">Cerrar</button>
 
-  <button id="eliminarBtn" class="opcion-btn eliminar">🗑 Eliminar</button>
-  <button id="rotarBtn" class="opcion-btn">↻ Rotar 90°</button>
-  <button id="duplicarBtn" class="opcion-btn">⧉ Duplicar</button>
+     <div id="object-tools" class="section hidden">
+      <h3>🧱 Muro seleccionado</h3>
+      <button id="deleteObject">🗑 Eliminar</button>
+      <button id="rotateObject">↻ Rotar 90°</button>
+      <button id="duplicateObject">📋 Duplicar</button>
+      <label for="widthInput">Alto (cm)</label>
+      <input type="number" id="widthInput" />
+      <label for="lengthInput">Ancho (cm)</label>
+      <input type="number" id="lengthInput" />
+    </div>
 
-  <div class="input-group">
-    <label for="altoInput">Alto (cm)</label>
-    <input type="number" id="altoInput" value="15" />
-  </div>
-
-  <div class="input-group">
-    <label for="anchoInput">Ancho (cm)</label>
-    <input type="number" id="anchoInput" value="400" />
-  </div>
-</div>
+    </div> <!-- Esto cierra el #toolbar -->
 
   <div id="stage-container"></div>
 
