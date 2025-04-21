@@ -288,7 +288,26 @@ cerrarPanelBtn.addEventListener("click", cerrarPanel);
 // Mostrar el panel al seleccionar muro
 function seleccionarMuro(muro) {
   selected = muro;
+
+  // Mostrar el panel
   abrirPanel();
+
+  // Actualizar inputs con las medidas del muro
+  document.getElementById("altoInput").value = Math.round(muro.height());
+  document.getElementById("anchoInput").value = Math.round(muro.width());
+
+  // Mostrar transformador
+  if (transformer) transformer.destroy();
+
+  transformer = new Konva.Transformer({
+    nodes: [muro],
+    enabledAnchors: [],
+  });
+
+  layer.add(transformer);
+  layer.draw();
+}
+
 }
 
 // Deseleccionar muro al hacer clic fuera del muro
