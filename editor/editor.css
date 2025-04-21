@@ -205,3 +205,51 @@ input[type="number"] {
 #toolbar.visible {
   display: block; /* Se muestra cuando tiene la clase 'visible' */
 }
+/* === PANEL MÁS COMPACTO Y ELEGANTE === */
+#toolbar {
+  width: 140px; /* antes 200px aprox (30% menos) */
+  padding: 8px;
+  font-size: 0.85rem;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  transform: translateX(-200px); /* inicia oculto */
+  transition: transform 0.4s ease, opacity 0.3s ease;
+  opacity: 0;
+  position: absolute;
+  top: 60px;
+  left: 0;
+  z-index: 999;
+}
+
+/* Mostrar el panel con animación */
+#toolbar.visible {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+/* Botones más pequeños y modernos */
+#toolbar button {
+  font-size: 0.75rem;
+  padding: 6px 10px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  width: 100%;
+  background: #e0e0e0;
+  border: none;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  transition: background 0.2s ease;
+}
+
+#toolbar button:hover {
+  background: #d0d0d0;
+}
+
+/* Inputs compactos */
+#toolbar input[type="number"] {
+  font-size: 0.75rem;
+  padding: 5px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  width: 100%;
+}
