@@ -270,3 +270,46 @@ stage.on('click', (e) => {
     layer.draw();
   }
 });
+
+let gridLayer = null;
+
+function drawGrid(gridSize = 50, color = '#f5f5dc') {
+  if (gridLayer) {
+    gridLayer.destroy(); // Si ya existe, la eliminamos
+  }
+  gridLayer = new Konva.Layer();
+  const width = stage.width();
+  const height = stage.height();
+
+  for (let i = 0; i < width; i += gridSize) {
+    gridLayer.add(new Konva.Line({
+      points: [i, 0, i, height],
+      stroke: color,
+      strokeWidth: 1
+    }));
+  }
+
+  for (let j = 0; j < height; j += gridSize) {
+    gridLayer.add(new Konva.Line({
+      points: [0, j, width, j],
+      stroke: color,
+      strokeWidth: 1
+    }));
+  }
+
+  stage.add(gridLayer);
+  gridLayer.moveToBottom();
+  gridLayer.draw();
+}
+
+function toggleGrid() {
+  if (gridLayer && !gridLayer.isDestroyed()) {
+    gridLayer.destroy();
+    gridLayer = null;
+  } else {
+    drawGrid();
+  }
+}
+
+// Dibujar cuadrícula inicial
+drawGrid();
