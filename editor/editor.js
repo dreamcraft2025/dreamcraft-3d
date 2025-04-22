@@ -272,19 +272,13 @@ stage.on('click', (e) => {
 });
 
 
-  }
-}
-
-// Dibujar cuadrícula inicial
-drawGrid();
-
 let gridLayer = null;
 
 function drawGrid(gridSize = 50, color = '#f5f5dc') {
   if (gridLayer) {
-    gridLayer.destroy(); // Eliminar la cuadrícula anterior si existe
+    gridLayer.destroy();
   }
-  gridLayer = new Konva.Layer({ listening: false }); // No interactiva
+  gridLayer = new Konva.Layer({ listening: false });
   const width = stage.width();
   const height = stage.height();
 
@@ -305,7 +299,7 @@ function drawGrid(gridSize = 50, color = '#f5f5dc') {
   }
 
   stage.add(gridLayer);
-  gridLayer.moveToBottom(); // Asegurar que quede al fondo
+  gridLayer.moveToBottom();
   gridLayer.draw();
 }
 
@@ -318,5 +312,5 @@ function toggleGrid() {
   }
 }
 
-// Asegurarse de que la cuadrícula se dibuje al cargar
+// Dibujar cuadrícula al cargar
 drawGrid();
