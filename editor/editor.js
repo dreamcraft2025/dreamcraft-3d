@@ -6,6 +6,8 @@ const stage = new Konva.Stage({
 
 const layer = new Konva.Layer();
 stage.add(layer);
+drawGrid();  // Dibujar cuadrícula inmediatamente después de crear el canvas
+
 
 let selected = null;
 let transformer = null;
@@ -144,7 +146,7 @@ function updateMeasurement() {
     measurement.add(new Konva.Tag({
       fill: 'white',
       stroke: '#555',
-      strokeWidth: 1,
+      strokeWidth: 1.5,
       cornerRadius: 4
     }));
 
@@ -274,7 +276,7 @@ stage.on('click', (e) => {
 
 let gridLayer = null;
 
-function drawGrid(gridSize = 50, color = '#f5f5dc') {
+function drawGrid(gridSize = 50, color = '#c8a36e') {
   if (gridLayer) {
     gridLayer.destroy();
   }
@@ -286,7 +288,7 @@ function drawGrid(gridSize = 50, color = '#f5f5dc') {
     gridLayer.add(new Konva.Line({
       points: [i, 0, i, height],
       stroke: color,
-      strokeWidth: 1
+      strokeWidth: 1.5
     }));
   }
 
@@ -294,7 +296,7 @@ function drawGrid(gridSize = 50, color = '#f5f5dc') {
     gridLayer.add(new Konva.Line({
       points: [0, j, width, j],
       stroke: color,
-      strokeWidth: 1
+      strokeWidth: 1.5
     }));
   }
 
@@ -312,5 +314,4 @@ function toggleGrid() {
   }
 }
 
-// Dibujar cuadrícula al cargar
-drawGrid();
+
