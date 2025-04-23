@@ -282,3 +282,14 @@ function addWall() {
     }
     layer.draw();
 }
+
+
+// Conectar el botón con la función después de que el documento esté completamente listo
+window.onload = function () {
+    const btn = document.getElementById('addWall');
+    if (btn) {
+        btn.addEventListener('click', addWall);
+    } else {
+        console.error("Botón 'addWall' no encontrado");
+    }
+};
