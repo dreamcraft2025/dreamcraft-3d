@@ -1,39 +1,36 @@
 <!DOCTYPE html>
+
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>DreamCraft 3D - Editor</title>
-  <link rel="stylesheet" href="editor.css?v=2" />
-  <script src="https://cdn.jsdelivr.net/npm/konva@9/konva.min.js"></script>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DreamCraft 3D - Editor</title>
+<link href="editor.css?v=2" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/konva@9/konva.min.js"></script>
 </head>
-<body>
+<body><div id="navBar">
+<span id="projectName">DreamCraft 3D</span>
+<button id="addWall">Añadir muro</button></div>
 <!-- Botón siempre visible -->
 <div id="fixed-controls">
-  <button id="addWall">Añadir muro</button>
 </div>
-
 <!-- Panel lateral oculto al principio -->
 <div id="toolbar">
-  <!-- Tus herramientas o botones -->
-  <button id="close-toolbar">Cerrar</button>
-
-     <div id="object-tools" class="section hidden">
-      <h3>🧱 Muro seleccionado</h3>
-      <button id="deleteObject">🗑 Eliminar</button>
-      <button id="rotateObject">↻ Rotar 90°</button>
-      <button id="duplicateObject">📋 Duplicar</button>
-      <label for="widthInput">Alto (cm)</label>
-      <input type="number" id="widthInput" />
-      <label for="lengthInput">Ancho (cm)</label>
-      <input type="number" id="lengthInput" />
-    </div>
-
-    </div> <!-- Esto cierra el #toolbar -->
-
-  <div id="stage-container"></div>
-
-  <!-- SCRIPT PRINCIPAL -->
-  <script src="editor.js"></script>
+<!-- Tus herramientas o botones -->
+<button id="close-toolbar">Cerrar</button>
+<div class="section hidden" id="object-tools">
+<h3>🧱 Muro seleccionado</h3>
+<button id="deleteObject">🗑 Eliminar</button>
+<button id="rotateObject">↻ Rotar 90°</button>
+<button id="duplicateObject">📋 Duplicar</button>
+<label for="widthInput">Alto (cm)</label>
+<input id="widthInput" type="number"/>
+<label for="lengthInput">Ancho (cm)</label>
+<input id="lengthInput" type="number"/>
+</div>
+</div> <!-- Esto cierra el #toolbar -->
+<div id="stage-container"></div>
+<!-- SCRIPT PRINCIPAL -->
+<script src="editor.js"></script>
 </body>
 </html>
