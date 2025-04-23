@@ -270,14 +270,3 @@ stage.on('click', (e) => {
     layer.draw();
   }
 });
-
-
-function addWall() {
-  const wall = createWall(); // utiliza valores por defecto
-  if (typeof layer !== 'undefined') {
-    layer.add(wall);
-    layer.draw();
-  } else {
-    console.error("Capa 'layer' no definida.");
-  }
-}
