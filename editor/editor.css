@@ -73,3 +73,36 @@ input[type="number"] {
   border-radius: 6px;
   margin-bottom: 0.6rem;
 }
+
+
+/* Barra superior fija */
+#topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background-color: #c9a77c;
+  display: flex;
+  align-items: center;
+  padding: 0 1rem;
+  z-index: 1001;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Ajustar posición del panel lateral para dejar espacio al topbar */
+#toolbar {
+  top: 60px;
+}
+
+/* Botones con mejor contraste */
+button {
+  background-color: #ffffff;
+  color: #333;
+  border: 1px solid #999;
+}
+
+button:hover {
+  background-color: #f2f2f2;
+  border-color: #666;
+}
