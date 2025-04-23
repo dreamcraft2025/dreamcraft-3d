@@ -1,6 +1,3 @@
-/* ===========================
-   ESTILOS GENERALES
-=========================== */
 body {
   margin: 0;
   font-family: 'Segoe UI', sans-serif;
@@ -10,78 +7,40 @@ body {
   overflow: hidden;
 }
 
-/* ===========================
-   ESCENARIO DE KONVA
-=========================== */
-#stage-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-  z-index: 1; /* Detrás del panel lateral */
-}
-
-/* ===========================
-   PANEL LATERAL (TOOLBAR)
-=========================== */
+/* LATERAL IZQUIERDO */
 #toolbar {
-  display: none; /* Oculto por defecto */
-  position: fixed;
-  top: 60px;
-  left: 0;
-  width: 200px;
-  padding: 10px;
-  font-size: 0.85rem;
-  background-color: #c9a77c; /* Beige claro */
-  border-radius: 0 8px 8px 0;
-  box-shadow: 5px 0 15px rgba(0, 0, 0, 0.15);
-  transform: translateX(-100vw); /* oculto completamente */
-  opacity: 0;
-  transition: transform 1.2s cubic-bezier(0.25, 1.3, 0.5, 1), opacity 0.8s ease;
+  width: 240px;
+  background: #c9a77c; /* beis claro */
+  padding: 1.2rem;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.08);
+  overflow-y: auto;
   z-index: 10;
-}
-
-#toolbar.visible {
-  display: block;
-  transform: translateX(0);
-  opacity: 1;
-}
-
-#toolbar.hidden {
-  transform: translateX(-220px);
-}
-
-/* Títulos dentro del panel */
-h3 {
-  font-size: 1rem;
-  margin-bottom: 1rem;
-  color: #444;
 }
 
 .section {
   margin-bottom: 2rem;
 }
 
-/* ===========================
-   BOTONES GENERALES
-=========================== */
+h3 {
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  color: #444;
+}
+
+/* BOTONES BONITOS */
 button {
   display: inline-block;
   width: 100%;
   margin-bottom: 0.7rem;
   padding: 0.6rem 1rem;
-  background-color: #c9a77c;
-  color: #333;
+  background-color: #c9a77c; /* beis claro */
+color: #333;
   border: 1px solid #ccc;
   border-radius: 8px;
   font-size: 0.95rem;
   font-weight: 500;
   transition: all 0.2s ease;
-  box-shadow: none;
+  box-shadow: none; /* sin sombra */
   cursor: pointer;
 }
 
@@ -91,36 +50,8 @@ button:hover {
   transform: scale(1.03);
 }
 
-/* Botones dentro del panel más compactos */
-#toolbar button {
-  font-size: 0.75rem;
-  padding: 6px 10px;
-  border-radius: 6px;
-  margin-bottom: 8px;
-  width: 100%;
-  background: #e0e0e0;
-  border: none;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-}
-
-#toolbar button:hover {
-  background: #d0d0d0;
-}
-
-/* Botón de cerrar */
-#close-toolbar {
-  text-align: right;
-  font-size: 1.2rem;
-  font-weight: bold;
-  margin-bottom: 1rem;
-  cursor: pointer;
-}
-
-/* ===========================
-   INPUTS DE MEDIDAS
-=========================== */
-input[type="number"],
-#toolbar input[type="number"] {
+/* INPUTS */
+input[type="number"] {
   width: 100%;
   padding: 0.45rem;
   border: 1px solid #ccc;
@@ -128,41 +59,18 @@ input[type="number"],
   font-size: 0.9rem;
   margin-bottom: 0.8rem;
 }
-
-/* Más compactos en panel */
-#toolbar input[type="number"] {
-  font-size: 0.75rem;
-  padding: 5px;
-  margin-bottom: 8px;
+#stage-container {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  position: relative;
 }
 
-/* ===========================
-   BOTÓN FLOTANTE PARA AÑADIR
-=========================== */
-#fixed-controls {
-  position: fixed;
-  top: 10px;
-  left: 220px; /* Ajustado para no tapar el panel */
-  z-index: 1000;
-  background-color: #c9a77c;
+.hidden {
+  display: none;
 }
 
-/* Botón añadir muro */
-#addWall {
-  padding: 0.6rem 1.2rem;
-  background-color: #6b4c2b !important;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-weight: bold;
-  font-size: 1rem;
-  cursor: pointer;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.15);
-}
-
-/* ===========================
-   MEDIDAS (ETIQUETAS SOBRE OBJETOS)
-=========================== */
+/* MEDIDAS SOBRE EL MURO */
 .measure-label {
   position: absolute;
   background: rgba(255, 255, 255, 0.9);
@@ -172,10 +80,198 @@ input[type="number"],
   pointer-events: none;
   border: 1px solid #aaa;
 }
+/* Botón fijo arriba a la izquierda */
+#fixed-controls {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 20;
+}
 
-/* ===========================
-   ESTADOS
-=========================== */
-.hidden {
+#addWall {
+  padding: 0.6rem 1.2rem;
+  background-color: #6b4c2b;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+}
+
+/* Panel lateral oculto por defecto */
+#toolbar {
   display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 240px;
+  height: 100vh;
+  background: #ffffff;
+  padding: 1.2rem;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.08);
+  overflow-y: auto;
+  z-index: 10;
+}
+
+/* Mostrar el panel cuando esté activo */
+#toolbar.visible {
+  display: block;
+}
+
+/* Botón de cerrar (la X) */
+#close-toolbar {
+  text-align: right;
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  cursor: pointer;
+}
+/* Estilo del panel lateral */
+#toolbar {
+  position: absolute;
+  top: 60px;
+  left: 10px;
+  width: 200px;
+  background-color: #f4f0e8;
+  padding: 10px;
+  border-radius: 6px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+  z-index: 999;
+}
+
+/* Mover el botón "Añadir muro" más a la derecha */
+#fixed-controls {
+  position: absolute;
+  top: 10px;
+  left: 220px; /* lo desplazamos hacia la derecha del panel */
+  z-index: 1000;
+}
+
+/* Si en el futuro querés ocultar el panel con JS */
+#toolbar.hidden {
+  transform: translateX(-220px);
+}
+/* === SOLUCIÓN DEL PROBLEMA DE MURO Y PANEL === */
+
+/* 1. El escenario ocupa toda la pantalla sin ser bloqueado */
+#stage-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1; /* Está debajo del panel */
+}
+
+/* 2. El panel lateral izquierdo flota con buen diseño */
+#toolbar {
+  position: absolute;
+  top: 60px;
+  left: 10px;
+  width: 200px;
+  background-color: #f4f0e8;
+  padding: 10px;
+  border-radius: 6px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+  z-index: 10; /* Está encima del escenario */
+}
+
+/* 3. El botón de "Añadir muro" se mueve a la derecha para no tapar el panel */
+#fixed-controls {
+  position: absolute;
+  top: 10px;
+  left: 220px; /* Separado del panel */
+  z-index: 20;
+}
+/* === CONTROL VISUAL DEL PANEL === */
+#toolbar {
+  display: none; /* Oculto por defecto */
+  position: absolute;
+  top: 60px;
+  left: 10px;
+  width: 200px;
+  background-color: #f4f0e8;
+  padding: 10px;
+  border-radius: 6px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+  z-index: 10;
+}
+
+#toolbar.visible {
+  display: block; /* Se muestra cuando tiene la clase 'visible' */
+}
+#toolbar {
+  position: fixed;
+  top: 60px;
+  left: 0;
+  width: 140px;
+  padding: 10px;
+  font-size: 0.85rem;
+  background-color: #f9f9f9;
+  border-radius: 0 8px 8px 0;
+  box-shadow: 5px 0 15px rgba(0, 0, 0, 0.15);
+  transform: translateX(-100vw); /* completamente fuera de pantalla */
+  opacity: 0;
+  transition:
+    transform 1.2s cubic-bezier(0.25, 1.3, 0.5, 1),
+    opacity 0.8s ease;
+  z-index: 999;
+}
+
+#toolbar.visible {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+/* Botones más pequeños y modernos */
+#toolbar button {
+  font-size: 0.75rem;
+  padding: 6px 10px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  width: 100%;
+  background: #e0e0e0;
+  border: none;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  transition: background 0.2s ease;
+}
+
+#toolbar button:hover {
+  background: #d0d0d0;
+}
+
+/* Inputs compactos */
+#toolbar input[type="number"] {
+  font-size: 0.75rem;
+  padding: 5px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  width: 100%;
+}
+#fixed-controls {
+  background-color: #c9a77c; /* beige claro */
+}
+#addWallBtn {
+  background-color: #c9a77c; /* beis claro */
+  box-shadow: none; /* sin sombra */
+  border: 1px solid #ccc;
+  color: #000;
+}
+.side-panel {
+  background-color: #c9a77c;
+}
+
+
+#addWall {
+  background-color: #c9a77c !important;
+  color: white;
+}
+
+#toolbar {
+  background-color: #c9a77c !important;
 }
