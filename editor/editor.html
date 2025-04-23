@@ -4,36 +4,50 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>DreamCraft 3D - Editor</title>
+  
+  <!-- Estilos del editor -->
   <link rel="stylesheet" href="editor.css?v=2" />
+
+  <!-- Librería Konva.js para gráficos en canvas -->
   <script src="https://cdn.jsdelivr.net/npm/konva@9/konva.min.js"></script>
 </head>
 <body>
-<!-- Botón siempre visible -->
-<div id="fixed-controls">
-  <button id="addWall">Añadir muro</button>
-</div>
 
-<!-- Panel lateral oculto al principio -->
-<div id="toolbar">
-  <!-- Tus herramientas o botones -->
-  <button id="close-toolbar">Cerrar</button>
+  <!-- Botón flotante siempre visible para añadir muros -->
+  <div id="fixed-controls">
+    <button id="addWall">Añadir muro</button>
+  </div>
 
-     <div id="object-tools" class="section hidden">
+  <!-- Panel lateral con herramientas (inicialmente oculto) -->
+  <div id="toolbar">
+
+    <!-- Botón para cerrar el panel de herramientas -->
+    <button id="close-toolbar">Cerrar</button>
+
+    <!-- Sección de herramientas específicas cuando se selecciona un muro -->
+    <div id="object-tools" class="section hidden">
       <h3>🧱 Muro seleccionado</h3>
+
+      <!-- Opciones de acción sobre el objeto seleccionado -->
       <button id="deleteObject">🗑 Eliminar</button>
       <button id="rotateObject">↻ Rotar 90°</button>
       <button id="duplicateObject">📋 Duplicar</button>
+
+      <!-- Campos para modificar dimensiones -->
       <label for="widthInput">Alto (cm)</label>
       <input type="number" id="widthInput" />
+
       <label for="lengthInput">Ancho (cm)</label>
       <input type="number" id="lengthInput" />
     </div>
+    
+  </div> <!-- Fin del panel lateral -->
 
-    </div> <!-- Esto cierra el #toolbar -->
-
+  <!-- Contenedor principal del canvas (escenario de trabajo) -->
   <div id="stage-container"></div>
 
-  <!-- SCRIPT PRINCIPAL -->
-  <script src="editor.js"></script>
+  <!-- Script principal con toda la lógica del editor -->
+  <script src="editor.js" defer></script>
+
 </body>
 </html>

@@ -1,17 +1,23 @@
+// Inicializar el escenario principal con Konva
 const stage = new Konva.Stage({
   container: 'stage-container',
- width: 3000,
+  width: 3000,
   height: window.innerHeight
 });
 
 const layer = new Konva.Layer();
 stage.add(layer);
 
-let selected = null;
-let transformer = null;
-let stickers = [];
+// Variables globales
+let selected = null;       // Objeto actualmente seleccionado
+let transformer = null;    // Transformador para manipular el objeto
+let stickers = [];         // Etiquetas para mostrar medidas
 
-// Crear muro
+// =========================
+// FUNCIONES PRINCIPALES
+// =========================
+
+// Crear un nuevo muro en la posición dada
 function createWall(x = 50, y = 50, width = 200, height = 15) {
   const wall = new Konva.Rect({
     x,
@@ -23,21 +29,25 @@ function createWall(x = 50, y = 50, width = 200, height = 15) {
     name: 'wall'
   });
 
+  // Interacciones visuales
   wall.on('mouseover', () => {
-    if (wall !== selected) wall.fill("#666666"); // gris oscuro
+    if (wall !== selected) wall.fill("#666666");
     layer.draw();
   });
 
   wall.on('mouseout', () => {
-    if (wall !== selected) wall.fill("#666666"); // gris oscuro
+    if (wall !== selected) wall.fill("#666666");
     hideStickers();
     layer.draw();
   });
-    wall.on('click', () => {
-  selectObject(wall);
-  document.getElementById('toolbar').classList.add('visible');
-});
 
+  // Selección del muro al hacer click
+  wall.on('click', () => {
+    selectObject(wall);
+    document.getElementById('toolbar').classList.add('visible');
+  });
+
+  // Actualizar medidas al mover o transformar
   wall.on('dragend transformend', () => {
     updateMeasurement();
     updateStickerPositions();
@@ -48,13 +58,17 @@ function createWall(x = 50, y = 50, width = 200, height = 15) {
   return wall;
 }
 
-// Añadir muro
+// =========================
+// EVENTOS DE INTERFAZ
+// =========================
+
+// Botón: Añadir muro
 document.getElementById('addWall').addEventListener('click', () => {
   const newWall = createWall();
   selectObject(newWall);
 });
 
-// Seleccionar objeto
+// Seleccionar un objeto y mostrar sus controles
 function selectObject(obj) {
   selected = obj;
 
@@ -66,7 +80,7 @@ function selectObject(obj) {
 
   transformer = new Konva.Transformer({
     nodes: [obj],
-    enabledAnchors: []
+    enabledAnchors: [] // sin puntos de anclaje visibles
   });
 
   layer.add(transformer);
@@ -75,7 +89,7 @@ function selectObject(obj) {
   showStickers(obj);
 }
 
-// Eliminar objeto
+// Botón: Eliminar objeto seleccionado
 document.getElementById('deleteObject').addEventListener('click', () => {
   if (selected) {
     selected.destroy();
@@ -87,7 +101,7 @@ document.getElementById('deleteObject').addEventListener('click', () => {
   }
 });
 
-// Rotar objeto
+// Botón: Rotar objeto 90 grados
 document.getElementById('rotateObject').addEventListener('click', () => {
   if (selected) {
     selected.rotate(90);
@@ -97,7 +111,7 @@ document.getElementById('rotateObject').addEventListener('click', () => {
   }
 });
 
-// Duplicar objeto
+// Botón: Duplicar objeto seleccionado
 document.getElementById('duplicateObject').addEventListener('click', () => {
   if (selected) {
     const clone = selected.clone({
@@ -110,7 +124,7 @@ document.getElementById('duplicateObject').addEventListener('click', () => {
   }
 });
 
-// Inputs manuales de medidas
+// Cambiar alto manualmente
 document.getElementById('widthInput').addEventListener('input', (e) => {
   if (selected) {
     selected.height(parseInt(e.target.value));
@@ -120,6 +134,7 @@ document.getElementById('widthInput').addEventListener('input', (e) => {
   }
 });
 
+// Cambiar ancho manualmente
 document.getElementById('lengthInput').addEventListener('input', (e) => {
   if (selected) {
     selected.width(parseInt(e.target.value));
@@ -129,144 +144,26 @@ document.getElementById('lengthInput').addEventListener('input', (e) => {
   }
 });
 
-// Mostrar medidas
+// =========================
+// FUNCIONES DE MEDICIÓN
+// =========================
+
 function updateMeasurement() {
   if (!selected) return;
 
-  const text = `${Math.round(selected.width())} cm x ${Math.round(selected.height())} cm`;
-
-  if (!selected.measurementText) {
-    const measurement = new Konva.Label({
-      x: selected.x() + selected.width() + 5,
-      y: selected.y() - 10
-    });
-
-    measurement.add(new Konva.Tag({
-      fill: 'white',
-      stroke: '#555',
-      strokeWidth: 1,
-      cornerRadius: 4
-    }));
-
-    measurement.add(new Konva.Text({
-      text: text,
-      fontSize: 12,
-      padding: 4,
-      fill: '#333'
-    }));
-
-    selected.measurementText = measurement;
-    layer.add(measurement);
-  } else {
-    selected.measurementText.getText().text(text);
-    selected.measurementText.position({
-      x: selected.x() + selected.width() + 5,
-      y: selected.y() - 10
-    });
-  }
-
-  layer.draw();
+  const text = `${Math.round(selected.width())} x ${Math.round(selected.height())} cm`;
+  console.log("Dimensiones:", text);
 }
 
-// Stickers extremos para estirar
+// Posicionar etiquetas de medida (función dummy por ahora)
+function updateStickerPositions() {
+  // Implementación pendiente
+}
+
 function showStickers(obj) {
-  hideStickers();
-
-  const leftSticker = new Konva.Circle({
-    x: obj.x(),
-    y: obj.y() + obj.height() / 2,
-    radius: 6,
-    fill: '#a67c52',
-    draggable: true
-  });
-
-  const rightSticker = new Konva.Circle({
-    x: obj.x() + obj.width(),
-    y: obj.y() + obj.height() / 2,
-    radius: 6,
-    fill: '#a67c52',
-    draggable: true
-  });
-
-  leftSticker.on('dragmove', () => {
-    const newX = leftSticker.x();
-    const newWidth = obj.x() + obj.width() - newX;
-    obj.x(newX);
-    obj.width(newWidth);
-    updateMeasurement();
-    updateStickerPositions();
-    layer.draw();
-  });
-
-  rightSticker.on('dragmove', () => {
-    const newWidth = rightSticker.x() - obj.x();
-    obj.width(newWidth);
-    updateMeasurement();
-    updateStickerPositions();
-    layer.draw();
-  });
-
-  stickers.push(leftSticker, rightSticker);
-  layer.add(leftSticker, rightSticker);
-  updateMeasurement();
-  layer.draw();
+  // Implementación pendiente
 }
 
 function hideStickers() {
-  stickers.forEach(s => s.destroy());
-  stickers = [];
-
-  if (selected && selected.measurementText) {
-    selected.measurementText.destroy();
-    selected.measurementText = null;
-  }
-  layer.draw();
+  // Implementación pendiente
 }
-
-function updateStickerPositions() {
-  if (!selected || stickers.length < 2) return;
-
-  stickers[0].position({
-    x: selected.x(),
-    y: selected.y() + selected.height() / 2
-  });
-
-  stickers[1].position({
-    x: selected.x() + selected.width(),
-    y: selected.y() + selected.height() / 2
-  });
-}
-document.getElementById('close-toolbar').addEventListener('click', () => {
-  document.getElementById('toolbar').classList.remove('visible');
-  deselectObject();
-});
-
-// Función para desseleccionar
-function deselectObject() {
-  if (selected) {
-    selected.stroke(null);
-    selected = null;
-    layer.draw();
-  }
-// Ocultar el panel si se hace clic fuera de un muro
-stage.on('click', (e) => {
-  if (!e.target.hasName('wall')) {
-    deselectObject();
-    document.getElementById('toolbar').classList.remove('visible');
-    document.getElementById('object-tools').classList.add('hidden');
-  }
-});
-}
-// Ocultar el panel si se hace clic fuera del muro
-stage.on('click', (e) => {
-  if (e.target === stage || e.target === stage.findOne('Layer')) {
-    if (transformer) transformer.destroy();
-    hideStickers();
-    selected = null;
-
-    document.getElementById('object-tools').classList.add('hidden');
-    document.getElementById('toolbar').classList.remove('visible');
-
-    layer.draw();
-  }
-});
