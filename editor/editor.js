@@ -281,6 +281,14 @@ function addWall() {
         stage.add(layer);
     }
     layer.draw();
+});
+
+    const layer = stage.findOne('.layer') || new Konva.Layer();
+    layer.add(wall);
+    if (!stage.findOne('.layer')) {
+        stage.add(layer);
+    }
+    layer.draw();
 }
 
 
