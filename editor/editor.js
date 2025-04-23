@@ -6,8 +6,6 @@ const stage = new Konva.Stage({
 
 const layer = new Konva.Layer();
 stage.add(layer);
-drawGrid();  // Dibujar cuadrícula inmediatamente después de crear el canvas
-
 
 let selected = null;
 let transformer = null;
@@ -146,7 +144,7 @@ function updateMeasurement() {
     measurement.add(new Konva.Tag({
       fill: 'white',
       stroke: '#555',
-      strokeWidth: 1.5,
+      strokeWidth: 1,
       cornerRadius: 4
     }));
 
@@ -272,46 +270,3 @@ stage.on('click', (e) => {
     layer.draw();
   }
 });
-
-
-let gridLayer = null;
-
-function drawGrid(gridSize = 50, color = '#c8a36e') {
-  if (gridLayer) {
-    gridLayer.destroy();
-  }
-  gridLayer = new Konva.Layer({ listening: false });
-  const width = stage.width();
-  const height = stage.height();
-
-  for (let i = 0; i < width; i += gridSize) {
-    gridLayer.add(new Konva.Line({
-      points: [i, 0, i, height],
-      stroke: color,
-      strokeWidth: 1.5
-    }));
-  }
-
-  for (let j = 0; j < height; j += gridSize) {
-    gridLayer.add(new Konva.Line({
-      points: [0, j, width, j],
-      stroke: color,
-      strokeWidth: 1.5
-    }));
-  }
-
-  stage.add(gridLayer);
-  gridLayer.moveToBottom();
-  gridLayer.draw();
-}
-
-function toggleGrid() {
-  if (gridLayer && !gridLayer.isDestroyed()) {
-    gridLayer.destroy();
-    gridLayer = null;
-  } else {
-    drawGrid();
-  }
-}
-
-

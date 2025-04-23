@@ -60,7 +60,6 @@ input[type="number"] {
   margin-bottom: 0.8rem;
 }
 #stage-container {
-  background-color: #f0f0f0;
   width: 100%;
   height: 100%;
   overflow: visible;
@@ -159,7 +158,6 @@ input[type="number"] {
 
 /* 1. El escenario ocupa toda la pantalla sin ser bloqueado */
 #stage-container {
-  background-color: #f0f0f0;
   position: absolute;
   top: 0;
   left: 0;
