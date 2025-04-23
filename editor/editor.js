@@ -1,4 +1,3 @@
-window.addEventListener('DOMContentLoaded', () => {
 const stage = new Konva.Stage({
   container: 'stage-container',
  width: 3000,
@@ -270,6 +269,4 @@ stage.on('click', (e) => {
 
     layer.draw();
   }
-});
-
 });
