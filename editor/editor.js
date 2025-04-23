@@ -1,4 +1,8 @@
 const stage = new Konva.Stage({
+
+const layer = new Konva.Layer();
+stage.add(layer);
+
   container: 'stage-container',
  width: 3000,
   height: window.innerHeight
