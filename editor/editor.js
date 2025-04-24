@@ -273,30 +273,4 @@ stage.on('click', (e) => {
 
 
 
-// Función para añadir un muro simple en la escena Konva
-function addWall() {
-    const wall = new Konva.Rect({
-        x: 50,
-        y: 50,
-        width: 100,
-        height: 30,
-        fill: 'gray',
-        draggable: true,
-        name: 'muro'
-    });
 
-    const layer = stage.findOne('.layer') || new Konva.Layer();
-    layer.add(wall);
-    if (!stage.findOne('.layer')) {
-        stage.add(layer);
-    }
-    layer.draw();
-}
-
-// Conectar el botón con el evento
-document.addEventListener('DOMContentLoaded', function () {
-    const btn = document.getElementById('addWall');
-    if (btn) {
-        btn.addEventListener('click', addWall);
-    }
-});
