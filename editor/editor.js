@@ -24,22 +24,44 @@ function createWall(x = 50, y = 50, width = 200, height = 15) {
     name: 'wall'
   });
 
+  const labelBg = new Konva.Rect({
+    width: 80,
+    height: 24,
+    fill: 'white',
+    cornerRadius: 4,
+    shadowBlur: 5,
+    shadowColor: 'black',
+    opacity: 0.8,
+    name: 'label-bg'
+  });
+
   const label = new Konva.Text({
     text: `${Math.round(width)}x${Math.round(height)} cm`,
     fontSize: 14,
-    fill: 'white',
+    fill: '#333',
     fontStyle: 'bold',
+    align: 'center',
+    verticalAlign: 'middle',
+    width: 80,
+    height: 24,
+    padding: 4,
     name: 'label'
   });
 
-  // Función para actualizar la posición del texto
   function updateLabelPosition() {
-    label.x(wall.x() + wall.width() / 2 - label.width() / 2);
-    label.y(wall.y() + wall.height() / 2 - label.height() / 2);
+    const centerX = wall.x() + wall.width() / 2;
+    const centerY = wall.y() + wall.height() / 2;
+
+    labelBg.x(centerX - labelBg.width() / 2);
+    labelBg.y(centerY - labelBg.height() / 2);
+
+    label.x(centerX - label.width() / 2);
+    label.y(centerY - label.height() / 2);
+
     label.text(`${Math.round(wall.width())}x${Math.round(wall.height())} cm`);
   }
 
-  wall.on('dragmove transform move', updateLabelPosition);
+  wall.on('dragmove transform move transformend transform', updateLabelPosition);
   wall.on('transformend', updateLabelPosition);
   wall.on('dragend', updateLabelPosition);
 
@@ -49,9 +71,14 @@ function createWall(x = 50, y = 50, width = 200, height = 15) {
   });
 
   layer.add(wall);
+  layer.add(labelBg);
   layer.add(label);
   updateLabelPosition();
   layer.draw();
+
+  // Asociar los elementos al muro para uso posterior
+  wall._label = label;
+  wall._labelBg = labelBg;
 
   return wall;
 }
@@ -69,6 +96,37 @@ function selectObject(obj) {
   document.getElementById('object-tools').classList.remove('hidden');
   document.getElementById('widthInput').value = Math.round(obj.height());
   document.getElementById('lengthInput').value = Math.round(obj.width());
+
+  document.getElementById('widthInput').oninput = (e) => {
+    obj.height(parseFloat(e.target.value));
+    if (obj._label) obj._label.text(`${Math.round(obj.width())}x${Math.round(obj.height())} cm`);
+    if (obj._label && obj._labelBg) updateLabelPositionFor(obj);
+    layer.draw();
+  };
+
+  document.getElementById('lengthInput').oninput = (e) => {
+    obj.width(parseFloat(e.target.value));
+    if (obj._label) obj._label.text(`${Math.round(obj.width())}x${Math.round(obj.height())} cm`);
+    if (obj._label && obj._labelBg) updateLabelPositionFor(obj);
+    layer.draw();
+  };
+
+  if (transformer) transformer.destroy();
+
+  transformer = new Konva.Transformer({
+    nodes: [obj]
+  });
+  layer.add(transformer);
+  layer.draw();
+}
+function updateLabelPositionFor(wall) {
+  const centerX = wall.x() + wall.width() / 2;
+  const centerY = wall.y() + wall.height() / 2;
+  wall._label.x(centerX - wall._label.width() / 2);
+  wall._label.y(centerY - wall._label.height() / 2);
+  wall._labelBg.x(centerX - wall._labelBg.width() / 2);
+  wall._labelBg.y(centerY - wall._labelBg.height() / 2);
+}  document.getElementById('lengthInput').value = Math.round(obj.width());
 
   if (transformer) transformer.destroy();
 
