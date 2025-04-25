@@ -5,58 +5,28 @@ const stage = new Konva.Stage({
 });
 
 
-// ZOOM Y DESPLAZAMIENTO
-let scaleBy = 1.05;
-stage.on('wheel', (e) => {
-  e.evt.preventDefault();
-  let oldScale = stage.scaleX();
+// CUADRÍCULA DE FONDO
+const gridLayer = new Konva.Layer();
+const gridSize = 50;
 
-  let pointer = stage.getPointerPosition();
-  let mousePointTo = {
-    x: (pointer.x - stage.x()) / oldScale,
-    y: (pointer.y - stage.y()) / oldScale,
-  };
+for (let i = 0; i < stage.width() / gridSize; i++) {
+  gridLayer.add(new Konva.Line({
+    points: [i * gridSize, 0, i * gridSize, stage.height()],
+    stroke: '#ddd',
+    strokeWidth: 1,
+  }));
+}
 
-  let direction = e.evt.deltaY > 0 ? -1 : 1;
-  let newScale = direction > 0 ? oldScale * scaleBy : oldScale / scaleBy;
+for (let j = 0; j < stage.height() / gridSize; j++) {
+  gridLayer.add(new Konva.Line({
+    points: [0, j * gridSize, stage.width(), j * gridSize],
+    stroke: '#ddd',
+    strokeWidth: 1,
+  }));
+}
 
-  stage.scale({ x: newScale, y: newScale });
-
-  let newPos = {
-    x: pointer.x - mousePointTo.x * newScale,
-    y: pointer.y - mousePointTo.y * newScale,
-  };
-  stage.position(newPos);
-  stage.batchDraw();
-});
-
-// DESPLAZAMIENTO DEL STAGE
-let isDragging = false;
-let lastDist = null;
-
-stage.on('mousedown touchstart', (e) => {
-  if (e.target === stage || e.target.getClassName() === 'Layer') {
-    isDragging = true;
-    lastDist = stage.getPointerPosition();
-  }
-});
-
-stage.on('mousemove touchmove', (e) => {
-  if (isDragging) {
-    let pos = stage.getPointerPosition();
-    let dx = pos.x - lastDist.x;
-    let dy = pos.y - lastDist.y;
-
-    stage.x(stage.x() + dx);
-    stage.y(stage.y() + dy);
-    stage.batchDraw();
-    lastDist = pos;
-  }
-});
-
-stage.on('mouseup touchend', () => {
-  isDragging = false;
-});
+stage.add(gridLayer);
+gridLayer.moveToBottom();
 
 const layer = new Konva.Layer();
 stage.add(layer);
@@ -328,3 +298,22 @@ stage.on('click', (e) => {
 
 
 
+
+
+// SLIDER DE ZOOM
+document.getElementById('zoomSlider').addEventListener('input', function (e) {
+  const scale = parseFloat(e.target.value);
+  const oldScale = stage.scaleX();
+  const pointer = stage.getPointerPosition() || { x: stage.width() / 2, y: stage.height() / 2 };
+  const mousePointTo = {
+    x: (pointer.x - stage.x()) / oldScale,
+    y: (pointer.y - stage.y()) / oldScale,
+  };
+  stage.scale({ x: scale, y: scale });
+  const newPos = {
+    x: pointer.x - mousePointTo.x * scale,
+    y: pointer.y - mousePointTo.y * scale,
+  };
+  stage.position(newPos);
+  stage.batchDraw();
+});
