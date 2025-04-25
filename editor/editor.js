@@ -300,7 +300,34 @@ stage.on('click', (e) => {
 
 
 
-// SLIDER DE ZOOM
+);
+
+
+// ZOOM CON RUEDA Y SLIDER + DESPLAZAMIENTO
+let scaleBy = 1.05;
+
+// ZOOM CON RUEDA DEL RATÓN
+stage.on('wheel', (e) => {
+  e.evt.preventDefault();
+  const oldScale = stage.scaleX();
+  const pointer = stage.getPointerPosition();
+  const mousePointTo = {
+    x: (pointer.x - stage.x()) / oldScale,
+    y: (pointer.y - stage.y()) / oldScale,
+  };
+  const direction = e.evt.deltaY > 0 ? -1 : 1;
+  const newScale = direction > 0 ? oldScale * scaleBy : oldScale / scaleBy;
+  stage.scale({ x: newScale, y: newScale });
+  const newPos = {
+    x: pointer.x - mousePointTo.x * newScale,
+    y: pointer.y - mousePointTo.y * newScale,
+  };
+  stage.position(newPos);
+  stage.batchDraw();
+  document.getElementById('zoomSlider').value = newScale.toFixed(2);
+});
+
+// ZOOM CON SLIDER
 document.getElementById('zoomSlider').addEventListener('input', function (e) {
   const scale = parseFloat(e.target.value);
   const oldScale = stage.scaleX();
@@ -316,4 +343,31 @@ document.getElementById('zoomSlider').addEventListener('input', function (e) {
   };
   stage.position(newPos);
   stage.batchDraw();
+});
+
+// DESPLAZAMIENTO (DRAG)
+let isDragging = false;
+let lastDist = null;
+
+stage.on('mousedown touchstart', (e) => {
+  if (e.target === stage || e.target.getClassName() === 'Layer') {
+    isDragging = true;
+    lastDist = stage.getPointerPosition();
+  }
+});
+
+stage.on('mousemove touchmove', (e) => {
+  if (isDragging) {
+    let pos = stage.getPointerPosition();
+    let dx = pos.x - lastDist.x;
+    let dy = pos.y - lastDist.y;
+    stage.x(stage.x() + dx);
+    stage.y(stage.y() + dy);
+    stage.batchDraw();
+    lastDist = pos;
+  }
+});
+
+stage.on('mouseup touchend', () => {
+  isDragging = false;
 });
