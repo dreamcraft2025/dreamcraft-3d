@@ -300,13 +300,29 @@ stage.on('click', (e) => {
 
 
 
-);
+// SLIDER DE ZOOM
+document.getElementById('zoomSlider').addEventListener('input', function (e) {
+  const scale = parseFloat(e.target.value);
+  const oldScale = stage.scaleX();
+  const pointer = stage.getPointerPosition() || { x: stage.width() / 2, y: stage.height() / 2 };
+  const mousePointTo = {
+    x: (pointer.x - stage.x()) / oldScale,
+    y: (pointer.y - stage.y()) / oldScale,
+  };
+  stage.scale({ x: scale, y: scale });
+  const newPos = {
+    x: pointer.x - mousePointTo.x * scale,
+    y: pointer.y - mousePointTo.y * scale,
+  };
+  stage.position(newPos);
+  stage.batchDraw();
+});
 
 
-// ZOOM CON RUEDA Y SLIDER + DESPLAZAMIENTO
+// === ZOOM Y DESPLAZAMIENTO FUNCIONALES ===
 let scaleBy = 1.05;
 
-// ZOOM CON RUEDA DEL RATÓN
+// ZOOM CON RUEDA
 stage.on('wheel', (e) => {
   e.evt.preventDefault();
   const oldScale = stage.scaleX();
@@ -317,6 +333,7 @@ stage.on('wheel', (e) => {
   };
   const direction = e.evt.deltaY > 0 ? -1 : 1;
   const newScale = direction > 0 ? oldScale * scaleBy : oldScale / scaleBy;
+
   stage.scale({ x: newScale, y: newScale });
   const newPos = {
     x: pointer.x - mousePointTo.x * newScale,
@@ -324,7 +341,10 @@ stage.on('wheel', (e) => {
   };
   stage.position(newPos);
   stage.batchDraw();
-  document.getElementById('zoomSlider').value = newScale.toFixed(2);
+
+  // Actualizar el slider
+  const slider = document.getElementById('zoomSlider');
+  if (slider) slider.value = newScale.toFixed(2);
 });
 
 // ZOOM CON SLIDER
@@ -345,29 +365,30 @@ document.getElementById('zoomSlider').addEventListener('input', function (e) {
   stage.batchDraw();
 });
 
-// DESPLAZAMIENTO (DRAG)
-let isDragging = false;
-let lastDist = null;
+// DRAG DEL STAGE
+let isPanning = false;
+let lastPanPos = null;
 
 stage.on('mousedown touchstart', (e) => {
   if (e.target === stage || e.target.getClassName() === 'Layer') {
-    isDragging = true;
-    lastDist = stage.getPointerPosition();
+    isPanning = true;
+    lastPanPos = stage.getPointerPosition();
   }
 });
 
 stage.on('mousemove touchmove', (e) => {
-  if (isDragging) {
-    let pos = stage.getPointerPosition();
-    let dx = pos.x - lastDist.x;
-    let dy = pos.y - lastDist.y;
+  if (isPanning) {
+    const pos = stage.getPointerPosition();
+    const dx = pos.x - lastPanPos.x;
+    const dy = pos.y - lastPanPos.y;
+
     stage.x(stage.x() + dx);
     stage.y(stage.y() + dy);
     stage.batchDraw();
-    lastDist = pos;
+    lastPanPos = pos;
   }
 });
 
 stage.on('mouseup touchend', () => {
-  isDragging = false;
+  isPanning = false;
 });
