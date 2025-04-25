@@ -12,6 +12,7 @@ let transformer = null;
 let stickers = [];
 
 // Crear muro
+// Crear muro con texto de medida
 function createWall(x = 50, y = 50, width = 200, height = 15) {
   const wall = new Konva.Rect({
     x,
@@ -23,28 +24,35 @@ function createWall(x = 50, y = 50, width = 200, height = 15) {
     name: 'wall'
   });
 
-  wall.on('mouseover', () => {
-    if (wall !== selected) wall.fill("#666666"); // gris oscuro
-    layer.draw();
+  const label = new Konva.Text({
+    text: `${Math.round(width)}x${Math.round(height)} cm`,
+    fontSize: 14,
+    fill: 'white',
+    fontStyle: 'bold',
+    name: 'label'
   });
 
-  wall.on('mouseout', () => {
-    if (wall !== selected) wall.fill("#666666"); // gris oscuro
-    hideStickers();
-    layer.draw();
-  });
-    wall.on('click', () => {
-  selectObject(wall);
-  document.getElementById('toolbar').classList.add('visible');
-});
+  // Función para actualizar la posición del texto
+  function updateLabelPosition() {
+    label.x(wall.x() + wall.width() / 2 - label.width() / 2);
+    label.y(wall.y() + wall.height() / 2 - label.height() / 2);
+    label.text(`${Math.round(wall.width())}x${Math.round(wall.height())} cm`);
+  }
 
-  wall.on('dragend transformend', () => {
-    updateMeasurement();
-    updateStickerPositions();
+  wall.on('dragmove transform move', updateLabelPosition);
+  wall.on('transformend', updateLabelPosition);
+  wall.on('dragend', updateLabelPosition);
+
+  wall.on('click', () => {
+    selectObject(wall);
+    document.getElementById('toolbar').classList.add('visible');
   });
 
   layer.add(wall);
+  layer.add(label);
+  updateLabelPosition();
   layer.draw();
+
   return wall;
 }
 
