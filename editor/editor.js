@@ -4,6 +4,60 @@ const stage = new Konva.Stage({
   height: window.innerHeight
 });
 
+
+// ZOOM Y DESPLAZAMIENTO
+let scaleBy = 1.05;
+stage.on('wheel', (e) => {
+  e.evt.preventDefault();
+  let oldScale = stage.scaleX();
+
+  let pointer = stage.getPointerPosition();
+  let mousePointTo = {
+    x: (pointer.x - stage.x()) / oldScale,
+    y: (pointer.y - stage.y()) / oldScale,
+  };
+
+  let direction = e.evt.deltaY > 0 ? -1 : 1;
+  let newScale = direction > 0 ? oldScale * scaleBy : oldScale / scaleBy;
+
+  stage.scale({ x: newScale, y: newScale });
+
+  let newPos = {
+    x: pointer.x - mousePointTo.x * newScale,
+    y: pointer.y - mousePointTo.y * newScale,
+  };
+  stage.position(newPos);
+  stage.batchDraw();
+});
+
+// DESPLAZAMIENTO DEL STAGE
+let isDragging = false;
+let lastDist = null;
+
+stage.on('mousedown touchstart', (e) => {
+  if (e.target === stage || e.target.getClassName() === 'Layer') {
+    isDragging = true;
+    lastDist = stage.getPointerPosition();
+  }
+});
+
+stage.on('mousemove touchmove', (e) => {
+  if (isDragging) {
+    let pos = stage.getPointerPosition();
+    let dx = pos.x - lastDist.x;
+    let dy = pos.y - lastDist.y;
+
+    stage.x(stage.x() + dx);
+    stage.y(stage.y() + dy);
+    stage.batchDraw();
+    lastDist = pos;
+  }
+});
+
+stage.on('mouseup touchend', () => {
+  isDragging = false;
+});
+
 const layer = new Konva.Layer();
 stage.add(layer);
 
@@ -44,8 +98,7 @@ function createWall(x = 50, y = 50, width = 200, height = 15) {
   });
 
   layer.add(wall);
-  layer.draw();  updateWallMeasurement(wall);
-
+  layer.draw();
   return wall;
 }
 
@@ -58,7 +111,6 @@ document.getElementById('addWall').addEventListener('click', () => {
 // Seleccionar objeto
 function selectObject(obj) {
   selected = obj;
-  updateWallMeasurement(selected);
 
   document.getElementById('object-tools').classList.remove('hidden');
   document.getElementById('widthInput').value = Math.round(obj.height());
@@ -276,37 +328,3 @@ stage.on('click', (e) => {
 
 
 
-
-
-// Función para crear o actualizar el texto de medida dentro del muro
-function updateWallMeasurement(wall) {
-  if (!wall.measurementText) {
-    wall.measurementText = new Konva.Text({
-      text: '',
-      fontSize: 14,
-      fontFamily: 'Arial',
-      fill: '#ffffff',
-      align: 'center',
-      verticalAlign: 'middle'
-    });
-    layer.add(wall.measurementText);
-  }
-
-  const width = Math.round(wall.width());
-  wall.measurementText.text(width + ' px');
-
-  // Posicionar el texto en el centro del muro
-  const rotation = wall.rotation();
-  wall.measurementText.x(wall.x() + wall.width() / 2 - wall.measurementText.width() / 2);
-  wall.measurementText.y(wall.y() + wall.height() / 2 - wall.measurementText.height() / 2);
-  wall.measurementText.rotation(rotation);
-  wall.measurementText.moveToTop();
-  layer.draw();
-}
-
-// Actualizar medida y posición del texto
-function updateMeasurement() {
-  if (selected && selected.measurementText) {
-    updateWallMeasurement(selected);
-  }
-}
