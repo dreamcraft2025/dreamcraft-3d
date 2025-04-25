@@ -44,7 +44,8 @@ function createWall(x = 50, y = 50, width = 200, height = 15) {
   });
 
   layer.add(wall);
-  layer.draw();
+  layer.draw();  updateWallMeasurement(wall);
+
   return wall;
 }
 
@@ -57,6 +58,7 @@ document.getElementById('addWall').addEventListener('click', () => {
 // Seleccionar objeto
 function selectObject(obj) {
   selected = obj;
+  updateWallMeasurement(selected);
 
   document.getElementById('object-tools').classList.remove('hidden');
   document.getElementById('widthInput').value = Math.round(obj.height());
@@ -274,3 +276,37 @@ stage.on('click', (e) => {
 
 
 
+
+
+// Función para crear o actualizar el texto de medida dentro del muro
+function updateWallMeasurement(wall) {
+  if (!wall.measurementText) {
+    wall.measurementText = new Konva.Text({
+      text: '',
+      fontSize: 14,
+      fontFamily: 'Arial',
+      fill: '#ffffff',
+      align: 'center',
+      verticalAlign: 'middle'
+    });
+    layer.add(wall.measurementText);
+  }
+
+  const width = Math.round(wall.width());
+  wall.measurementText.text(width + ' px');
+
+  // Posicionar el texto en el centro del muro
+  const rotation = wall.rotation();
+  wall.measurementText.x(wall.x() + wall.width() / 2 - wall.measurementText.width() / 2);
+  wall.measurementText.y(wall.y() + wall.height() / 2 - wall.measurementText.height() / 2);
+  wall.measurementText.rotation(rotation);
+  wall.measurementText.moveToTop();
+  layer.draw();
+}
+
+// Actualizar medida y posición del texto
+function updateMeasurement() {
+  if (selected && selected.measurementText) {
+    updateWallMeasurement(selected);
+  }
+}
