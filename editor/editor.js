@@ -392,3 +392,5 @@ stage.on('mousemove touchmove', (e) => {
 stage.on('mouseup touchend', () => {
   isPanning = false;
 });
+  isPanning = false;
+});
