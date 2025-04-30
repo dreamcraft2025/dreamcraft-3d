@@ -274,3 +274,65 @@ stage.on('click', (e) => {
 
 
 
+
+
+
+// === PANNING ===
+let isPanning = false;
+let lastDist = { x: 0, y: 0 };
+
+stage.on('mousedown', (e) => {
+  // Solo iniciar panning si no se ha hecho clic sobre un objeto Konva
+  if (e.target === stage) {
+    isPanning = true;
+    const pos = stage.getPointerPosition();
+    lastDist = { x: pos.x, y: pos.y };
+  }
+});
+
+stage.on('mousemove', (e) => {
+  if (!isPanning) return;
+  const pos = stage.getPointerPosition();
+  const dx = pos.x - lastDist.x;
+  const dy = pos.y - lastDist.y;
+  lastDist = pos;
+  const oldPos = stage.position();
+  stage.position({
+    x: oldPos.x + dx,
+    y: oldPos.y + dy
+  });
+  stage.batchDraw();
+});
+
+stage.on('mouseup', () => {
+  isPanning = false;
+});
+
+// === ZOOM ===
+stage.on('wheel', (e) => {
+  e.evt.preventDefault();
+  const oldScale = stage.scaleX();
+  const pointer = stage.getPointerPosition();
+
+  const scaleBy = 1.05;
+  const direction = e.evt.deltaY > 0 ? -1 : 1;
+  const newScale = direction > 0 ? oldScale * scaleBy : oldScale / scaleBy;
+
+  // Limitar zoom entre 0.2x y 5x
+  const limitedScale = Math.max(0.2, Math.min(newScale, 5));
+
+  stage.scale({ x: limitedScale, y: limitedScale });
+
+  const mousePointTo = {
+    x: (pointer.x - stage.x()) / oldScale,
+    y: (pointer.y - stage.y()) / oldScale
+  };
+
+  const newPos = {
+    x: pointer.x - mousePointTo.x * limitedScale,
+    y: pointer.y - mousePointTo.y * limitedScale
+  };
+
+  stage.position(newPos);
+  stage.batchDraw();
+});
