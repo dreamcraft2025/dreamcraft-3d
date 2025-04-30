@@ -336,3 +336,25 @@ stage.on('wheel', (e) => {
   stage.position(newPos);
   stage.batchDraw();
 });
+
+
+// === Cuadrícula de fondo beige ===
+const grid = new PIXI.Graphics();
+grid.lineStyle(1, 0xf5f5dc, 1); // Beige
+
+const gridSize = 50;
+const width = app.renderer.width;
+const height = app.renderer.height;
+
+for (let x = 0; x < width; x += gridSize) {
+    grid.moveTo(x, 0);
+    grid.lineTo(x, height);
+}
+
+for (let y = 0; y < height; y += gridSize) {
+    grid.moveTo(0, y);
+    grid.lineTo(width, y);
+}
+
+app.stage.addChildAt(grid, 0); // Al fondo
+// ===============================
