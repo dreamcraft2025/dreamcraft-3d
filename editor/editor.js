@@ -1,8 +1,3 @@
-
-// Variables para pan (mover la vista)
-let isPanning = false;
-let startPan = { x: 0, y: 0 };
-
 const stage = new Konva.Stage({
   container: 'stage-container',
  width: 3000,
@@ -395,30 +390,5 @@ stage.on('mousemove touchmove', (e) => {
 });
 
 stage.on('mouseup touchend', () => {
-  isPanning = false;
-});
-
-
-// Eventos para pan
-stage.on('mousedown touchstart', function (e) {
-  if (e.target === stage) {
-    isPanning = true;
-    const pointer = stage.getPointerPosition();
-    startPan = { x: pointer.x - stage.x(), y: pointer.y - stage.y() };
-  }
-});
-
-stage.on('mousemove touchmove', function (e) {
-  if (isPanning) {
-    const pointer = stage.getPointerPosition();
-    stage.position({
-      x: pointer.x - startPan.x,
-      y: pointer.y - startPan.y
-    });
-    stage.batchDraw();
-  }
-});
-
-stage.on('mouseup touchend', function (e) {
   isPanning = false;
 });
