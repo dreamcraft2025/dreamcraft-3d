@@ -1,3 +1,29 @@
+
+// === CUADRÍCULA DE FONDO ===
+function drawGrid(layer, spacing = 50, color = '#f5f5dc') {
+    const width = stage.width();
+    const height = stage.height();
+    
+    for (let i = 0; i < width; i += spacing) {
+        const verticalLine = new Konva.Line({
+            points: [i, 0, i, height],
+            stroke: color,
+            strokeWidth: 1,
+        });
+        layer.add(verticalLine);
+    }
+    
+    for (let j = 0; j < height; j += spacing) {
+        const horizontalLine = new Konva.Line({
+            points: [0, j, width, j],
+            stroke: color,
+            strokeWidth: 1,
+        });
+        layer.add(horizontalLine);
+    }
+}
+
+
 const stage = new Konva.Stage({
   container: 'stage-container',
  width: 3000,
@@ -5,6 +31,7 @@ const stage = new Konva.Stage({
 });
 
 const layer = new Konva.Layer();
+drawGrid(layer);
 stage.add(layer);
 
 let selected = null;
