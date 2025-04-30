@@ -1,36 +1,109 @@
-<!DOCTYPE html>
 
+<!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>DreamCraft 3D - Editor</title>
-<link href="editor.css?v=2" rel="stylesheet"/>
-<script src="https://cdn.jsdelivr.net/npm/konva@9/konva.min.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Editor 2D</title>
+  <link rel="stylesheet" href="editor.css" />
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      height: 100%;
+    }
+    #canvas-container {
+      width: 100vw;
+      height: 100vh;
+      background: #eee;
+      cursor: grab;
+      position: relative;
+      overflow: hidden;
+    }
+    #design-area {
+      width: 2000px;
+      height: 2000px;
+      background: repeating-conic-gradient(#ccc 0% 25%, transparent 0% 50%) 50% / 40px 40px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform-origin: 0 0;
+    }
+  </style>
 </head>
-<body><div id="navBar">
-<span id="projectName">DreamCraft 3D</span>
-<button id="addWall">Añadir muro</button></div>
-<!-- Botón siempre visible -->
-<div id="fixed-controls">
-</div>
-<!-- Panel lateral oculto al principio -->
-<div id="toolbar">
-<!-- Tus herramientas o botones -->
-<button id="close-toolbar">Cerrar</button>
-<div class="section hidden" id="object-tools">
-<h3>🧱 Muro seleccionado</h3>
-<button id="deleteObject">🗑 Eliminar</button>
-<button id="rotateObject">↻ Rotar 90°</button>
-<button id="duplicateObject">📋 Duplicar</button>
-<label for="widthInput">Alto (cm)</label>
-<input id="widthInput" type="number"/>
-<label for="lengthInput">Ancho (cm)</label>
-<input id="lengthInput" type="number"/>
-</div>
-</div> <!-- Esto cierra el #toolbar -->
-<div id="stage-container"></div>
-<!-- SCRIPT PRINCIPAL -->
-<script src="editor.js"></script>
+<body>
+  <div id="canvas-container">
+    <div id="design-area"></div>
+  </div>
+
+  <script src="editor.js"></script>
+  <script>
+    const designArea = document.getElementById("design-area");
+    const container = document.getElementById("canvas-container");
+
+    let isDragging = false;
+    let startX, startY;
+    let offsetX = 0, offsetY = 0;
+    let scale = 1;
+
+    function updateTransform() {
+      designArea.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${scale})`;
+    }
+
+    container.addEventListener("mousedown", (e) => {
+      isDragging = true;
+      container.style.cursor = "grabbing";
+      startX = e.clientX - offsetX;
+      startY = e.clientY - offsetY;
+    });
+
+    container.addEventListener("mousemove", (e) => {
+      if (!isDragging) return;
+      offsetX = e.clientX - startX;
+      offsetY = e.clientY - startY;
+      updateTransform();
+    });
+
+    container.addEventListener("mouseup", () => {
+      isDragging = false;
+      container.style.cursor = "grab";
+    });
+
+    container.addEventListener("mouseleave", () => {
+      isDragging = false;
+      container.style.cursor = "grab";
+    });
+
+    // Movimiento con teclado
+    document.addEventListener("keydown", (e) => {
+      const step = 20;
+      switch (e.key) {
+        case "ArrowUp": case "w": case "W": offsetY += step; break;
+        case "ArrowDown": case "s": case "S": offsetY -= step; break;
+        case "ArrowLeft": case "a": case "A": offsetX += step; break;
+        case "ArrowRight": case "d": case "D": offsetX -= step; break;
+      }
+      updateTransform();
+    });
+
+    // Zoom con la rueda del mouse
+    container.addEventListener("wheel", (e) => {
+      e.preventDefault();
+      const zoomFactor = 0.1;
+      const oldScale = scale;
+      if (e.deltaY < 0) scale *= (1 + zoomFactor);
+      else scale *= (1 - zoomFactor);
+      scale = Math.min(Math.max(0.2, scale), 5);
+
+      const rect = container.getBoundingClientRect();
+      const mx = e.clientX - rect.left;
+      const my = e.clientY - rect.top;
+      offsetX = mx - ((mx - offsetX) * (scale / oldScale));
+      offsetY = my - ((my - offsetY) * (scale / oldScale));
+
+      updateTransform();
+    }, { passive: false });
+  </script>
 </body>
 </html>
