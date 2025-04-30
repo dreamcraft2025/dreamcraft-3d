@@ -7,6 +7,32 @@ const stage = new Konva.Stage({
 const layer = new Konva.Layer();
 stage.add(layer);
 
+// === Cuadrícula de fondo beige (Konva.js) ===
+const gridLayer = new Konva.Layer();
+const gridSize = 50;
+const stageWidth = stage.width();
+const stageHeight = stage.height();
+
+for (let i = 0; i < stageWidth; i += gridSize) {
+  gridLayer.add(new Konva.Line({
+    points: [i, 0, i, stageHeight],
+    stroke: '#f5f5dc',
+    strokeWidth: 1,
+  }));
+}
+for (let j = 0; j < stageHeight; j += gridSize) {
+  gridLayer.add(new Konva.Line({
+    points: [0, j, stageWidth, j],
+    stroke: '#f5f5dc',
+    strokeWidth: 1,
+  }));
+}
+
+stage.add(gridLayer);
+stage.moveToBottom(); // Asegura que esté al fondo
+// ============================================
+
+
 let selected = null;
 let transformer = null;
 let stickers = [];
@@ -339,9 +365,6 @@ stage.on('wheel', (e) => {
 
 
 // === Cuadrícula de fondo beige ===
-const grid = new PIXI.Graphics();
-grid.lineStyle(1, 0xf5f5dc, 1); // Beige
-
 const gridSize = 50;
 const width = app.renderer.width;
 const height = app.renderer.height;
