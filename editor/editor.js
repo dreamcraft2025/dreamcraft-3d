@@ -7,32 +7,6 @@ const stage = new Konva.Stage({
 const layer = new Konva.Layer();
 stage.add(layer);
 
-// === Cuadrícula de fondo beige (Konva.js) ===
-const gridLayer = new Konva.Layer();
-const gridSize = 50;
-const stageWidth = stage.width();
-const stageHeight = stage.height();
-
-for (let i = 0; i < stageWidth; i += gridSize) {
-  gridLayer.add(new Konva.Line({
-    points: [i, 0, i, stageHeight],
-    stroke: '#f5f5dc',
-    strokeWidth: 1,
-  }));
-}
-for (let j = 0; j < stageHeight; j += gridSize) {
-  gridLayer.add(new Konva.Line({
-    points: [0, j, stageWidth, j],
-    stroke: '#f5f5dc',
-    strokeWidth: 1,
-  }));
-}
-
-stage.add(gridLayer);
-stage.moveToBottom(); // Asegura que esté al fondo
-// ============================================
-
-
 let selected = null;
 let transformer = null;
 let stickers = [];
@@ -362,22 +336,3 @@ stage.on('wheel', (e) => {
   stage.position(newPos);
   stage.batchDraw();
 });
-
-
-// === Cuadrícula de fondo beige ===
-const gridSize = 50;
-const width = app.renderer.width;
-const height = app.renderer.height;
-
-for (let x = 0; x < width; x += gridSize) {
-    grid.moveTo(x, 0);
-    grid.lineTo(x, height);
-}
-
-for (let y = 0; y < height; y += gridSize) {
-    grid.moveTo(0, y);
-    grid.lineTo(width, y);
-}
-
-app.stage.addChildAt(grid, 0); // Al fondo
-// ===============================
