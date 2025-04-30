@@ -10,7 +10,7 @@ function drawGrid(layer, spacing = 50, color = '#f5f5dc') {
             stroke: color,
             strokeWidth: 1,
         });
-        layer.add(verticalLine);
+        mainLayer.add(verticalLine);
     }
     
     for (let j = 0; j < height; j += spacing) {
@@ -19,7 +19,7 @@ function drawGrid(layer, spacing = 50, color = '#f5f5dc') {
             stroke: color,
             strokeWidth: 1,
         });
-        layer.add(horizontalLine);
+        mainLayer.add(horizontalLine);
     }
 }
 
@@ -30,9 +30,11 @@ const stage = new Konva.Stage({
   height: window.innerHeight
 });
 
-const layer = new Konva.Layer();
-drawGrid(layer);
-stage.add(layer);
+const gridLayer = new Konva.Layer();
+const mainLayer = new Konva.Layer();
+drawGrid(gridLayer);
+stage.add(gridLayer);
+stage.add(mainLayer);
 
 let selected = null;
 let transformer = null;
@@ -52,13 +54,13 @@ function createWall(x = 50, y = 50, width = 200, height = 15) {
 
   wall.on('mouseover', () => {
     if (wall !== selected) wall.fill("#666666"); // gris oscuro
-    layer.draw();
+    mainLayer.draw();
   });
 
   wall.on('mouseout', () => {
     if (wall !== selected) wall.fill("#666666"); // gris oscuro
     hideStickers();
-    layer.draw();
+    mainLayer.draw();
   });
     wall.on('click', () => {
   selectObject(wall);
@@ -70,8 +72,8 @@ function createWall(x = 50, y = 50, width = 200, height = 15) {
     updateStickerPositions();
   });
 
-  layer.add(wall);
-  layer.draw();
+  mainLayer.add(wall);
+  mainLayer.draw();
   return wall;
 }
 
@@ -96,8 +98,8 @@ function selectObject(obj) {
     enabledAnchors: []
   });
 
-  layer.add(transformer);
-  layer.draw();
+  mainLayer.add(transformer);
+  mainLayer.draw();
 
   showStickers(obj);
 }
@@ -110,7 +112,7 @@ document.getElementById('deleteObject').addEventListener('click', () => {
     hideStickers();
     selected = null;
     document.getElementById('object-tools').classList.add('hidden');
-    layer.draw();
+    mainLayer.draw();
   }
 });
 
@@ -120,7 +122,7 @@ document.getElementById('rotateObject').addEventListener('click', () => {
     selected.rotate(90);
     updateMeasurement();
     updateStickerPositions();
-    layer.draw();
+    mainLayer.draw();
   }
 });
 
@@ -131,9 +133,9 @@ document.getElementById('duplicateObject').addEventListener('click', () => {
       x: selected.x() + 20,
       y: selected.y() + 20
     });
-    layer.add(clone);
+    mainLayer.add(clone);
     selectObject(clone);
-    layer.draw();
+    mainLayer.draw();
   }
 });
 
@@ -143,7 +145,7 @@ document.getElementById('widthInput').addEventListener('input', (e) => {
     selected.height(parseInt(e.target.value));
     updateMeasurement();
     updateStickerPositions();
-    layer.draw();
+    mainLayer.draw();
   }
 });
 
@@ -152,7 +154,7 @@ document.getElementById('lengthInput').addEventListener('input', (e) => {
     selected.width(parseInt(e.target.value));
     updateMeasurement();
     updateStickerPositions();
-    layer.draw();
+    mainLayer.draw();
   }
 });
 
@@ -183,7 +185,7 @@ function updateMeasurement() {
     }));
 
     selected.measurementText = measurement;
-    layer.add(measurement);
+    mainLayer.add(measurement);
   } else {
     selected.measurementText.getText().text(text);
     selected.measurementText.position({
@@ -192,7 +194,7 @@ function updateMeasurement() {
     });
   }
 
-  layer.draw();
+  mainLayer.draw();
 }
 
 // Stickers extremos para estirar
@@ -222,7 +224,7 @@ function showStickers(obj) {
     obj.width(newWidth);
     updateMeasurement();
     updateStickerPositions();
-    layer.draw();
+    mainLayer.draw();
   });
 
   rightSticker.on('dragmove', () => {
@@ -230,13 +232,13 @@ function showStickers(obj) {
     obj.width(newWidth);
     updateMeasurement();
     updateStickerPositions();
-    layer.draw();
+    mainLayer.draw();
   });
 
   stickers.push(leftSticker, rightSticker);
-  layer.add(leftSticker, rightSticker);
+  mainLayer.add(leftSticker, rightSticker);
   updateMeasurement();
-  layer.draw();
+  mainLayer.draw();
 }
 
 function hideStickers() {
@@ -247,7 +249,7 @@ function hideStickers() {
     selected.measurementText.destroy();
     selected.measurementText = null;
   }
-  layer.draw();
+  mainLayer.draw();
 }
 
 function updateStickerPositions() {
@@ -273,7 +275,7 @@ function deselectObject() {
   if (selected) {
     selected.stroke(null);
     selected = null;
-    layer.draw();
+    mainLayer.draw();
   }
 // Ocultar el panel si se hace clic fuera de un muro
 stage.on('click', (e) => {
@@ -294,7 +296,7 @@ stage.on('click', (e) => {
     document.getElementById('object-tools').classList.add('hidden');
     document.getElementById('toolbar').classList.remove('visible');
 
-    layer.draw();
+    mainLayer.draw();
   }
 });
 
