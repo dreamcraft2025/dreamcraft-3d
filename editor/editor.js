@@ -32,6 +32,45 @@ for (let j = 0; j < height; j += gridSize) {
 // Agregar primero la rejilla al escenario
 stage.add(gridLayer);
 
+
+// --- INFINITE GRID CONFIG ---
+function drawGrid() {
+  gridLayer.destroyChildren();
+  const viewPos = stage.position();
+  const stageWidth = stage.width();
+  const stageHeight = stage.height();
+
+  const offsetX = -viewPos.x % gridSize;
+  const offsetY = -viewPos.y % gridSize;
+
+  const startX = -gridSize + offsetX;
+  const startY = -gridSize + offsetY;
+
+  for (let x = startX; x < stageWidth; x += gridSize) {
+    gridLayer.add(new Konva.Line({
+      points: [x, 0, x, stageHeight],
+      stroke: '#e0e0e0',
+      strokeWidth: 1
+    }));
+  }
+
+  for (let y = startY; y < stageHeight; y += gridSize) {
+    gridLayer.add(new Konva.Line({
+      points: [0, y, stageWidth, y],
+      stroke: '#e0e0e0',
+      strokeWidth: 1
+    }));
+  }
+
+  gridLayer.batchDraw();
+}
+
+stage.on('dragmove', drawGrid);
+stage.draggable(true);
+drawGrid();
+// --- END INFINITE GRID CONFIG ---
+
+
 const layer = new Konva.Layer();
 stage.add(layer);
 
