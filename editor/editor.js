@@ -33,30 +33,31 @@ for (let j = 0; j < height; j += gridSize) {
 stage.add(gridLayer);
 
 
-// --- INFINITE GRID CONFIG ---
+
+// --- INFINITE GRID CONFIG (MEJORADA) ---
 function drawGrid() {
   gridLayer.destroyChildren();
   const viewPos = stage.position();
   const stageWidth = stage.width();
   const stageHeight = stage.height();
 
-  const offsetX = -viewPos.x % gridSize;
-  const offsetY = -viewPos.y % gridSize;
+  const extra = 2000; // Dibujar más allá de los bordes
+  const startX = -extra - (viewPos.x % gridSize);
+  const endX = stageWidth + extra;
+  const startY = -extra - (viewPos.y % gridSize);
+  const endY = stageHeight + extra;
 
-  const startX = -gridSize + offsetX;
-  const startY = -gridSize + offsetY;
-
-  for (let x = startX; x < stageWidth; x += gridSize) {
+  for (let x = startX; x < endX; x += gridSize) {
     gridLayer.add(new Konva.Line({
-      points: [x, 0, x, stageHeight],
+      points: [x, startY, x, endY],
       stroke: '#e0e0e0',
       strokeWidth: 1
     }));
   }
 
-  for (let y = startY; y < stageHeight; y += gridSize) {
+  for (let y = startY; y < endY; y += gridSize) {
     gridLayer.add(new Konva.Line({
-      points: [0, y, stageWidth, y],
+      points: [startX, y, endX, y],
       stroke: '#e0e0e0',
       strokeWidth: 1
     }));
@@ -69,6 +70,7 @@ stage.on('dragmove', drawGrid);
 stage.draggable(true);
 drawGrid();
 // --- END INFINITE GRID CONFIG ---
+
 
 
 const layer = new Konva.Layer();
