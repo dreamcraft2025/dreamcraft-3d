@@ -4,6 +4,34 @@ const stage = new Konva.Stage({
   height: window.innerHeight
 });
 
+
+// Capa de fondo con rejilla
+const gridLayer = new Konva.Layer();
+
+// Crear líneas de rejilla
+const gridSize = 50;
+const width = stage.width();
+const height = stage.height();
+
+for (let i = 0; i < width; i += gridSize) {
+  gridLayer.add(new Konva.Line({
+    points: [i, 0, i, height],
+    stroke: '#e0e0e0',
+    strokeWidth: 1
+  }));
+}
+
+for (let j = 0; j < height; j += gridSize) {
+  gridLayer.add(new Konva.Line({
+    points: [0, j, width, j],
+    stroke: '#e0e0e0',
+    strokeWidth: 1
+  }));
+}
+
+// Agregar primero la rejilla al escenario
+stage.add(gridLayer);
+
 const layer = new Konva.Layer();
 stage.add(layer);
 
