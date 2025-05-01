@@ -1,40 +1,11 @@
-
-// === CUADRÍCULA DE FONDO ===
-function drawGrid(layer, spacing = 50, color = '#f5f5dc') {
-    const width = stage.width();
-    const height = stage.height();
-    
-    for (let i = 0; i < width; i += spacing) {
-        const verticalLine = new Konva.Line({
-            points: [i, 0, i, height],
-            stroke: color,
-            strokeWidth: 1,
-        });
-        mainLayer.add(verticalLine);
-    }
-    
-    for (let j = 0; j < height; j += spacing) {
-        const horizontalLine = new Konva.Line({
-            points: [0, j, width, j],
-            stroke: color,
-            strokeWidth: 1,
-        });
-        mainLayer.add(horizontalLine);
-    }
-}
-
-
 const stage = new Konva.Stage({
   container: 'stage-container',
  width: 3000,
   height: window.innerHeight
 });
 
-const gridLayer = new Konva.Layer();
-const mainLayer = new Konva.Layer();
-drawGrid(gridLayer);
-stage.add(gridLayer);
-stage.add(mainLayer);
+const layer = new Konva.Layer();
+stage.add(layer);
 
 let selected = null;
 let transformer = null;
@@ -54,13 +25,13 @@ function createWall(x = 50, y = 50, width = 200, height = 15) {
 
   wall.on('mouseover', () => {
     if (wall !== selected) wall.fill("#666666"); // gris oscuro
-    mainLayer.draw();
+    layer.draw();
   });
 
   wall.on('mouseout', () => {
     if (wall !== selected) wall.fill("#666666"); // gris oscuro
     hideStickers();
-    mainLayer.draw();
+    layer.draw();
   });
     wall.on('click', () => {
   selectObject(wall);
@@ -72,8 +43,8 @@ function createWall(x = 50, y = 50, width = 200, height = 15) {
     updateStickerPositions();
   });
 
-  mainLayer.add(wall);
-  mainLayer.draw();
+  layer.add(wall);
+  layer.draw();
   return wall;
 }
 
@@ -98,8 +69,8 @@ function selectObject(obj) {
     enabledAnchors: []
   });
 
-  mainLayer.add(transformer);
-  mainLayer.draw();
+  layer.add(transformer);
+  layer.draw();
 
   showStickers(obj);
 }
@@ -112,7 +83,7 @@ document.getElementById('deleteObject').addEventListener('click', () => {
     hideStickers();
     selected = null;
     document.getElementById('object-tools').classList.add('hidden');
-    mainLayer.draw();
+    layer.draw();
   }
 });
 
@@ -122,7 +93,7 @@ document.getElementById('rotateObject').addEventListener('click', () => {
     selected.rotate(90);
     updateMeasurement();
     updateStickerPositions();
-    mainLayer.draw();
+    layer.draw();
   }
 });
 
@@ -133,9 +104,9 @@ document.getElementById('duplicateObject').addEventListener('click', () => {
       x: selected.x() + 20,
       y: selected.y() + 20
     });
-    mainLayer.add(clone);
+    layer.add(clone);
     selectObject(clone);
-    mainLayer.draw();
+    layer.draw();
   }
 });
 
@@ -145,7 +116,7 @@ document.getElementById('widthInput').addEventListener('input', (e) => {
     selected.height(parseInt(e.target.value));
     updateMeasurement();
     updateStickerPositions();
-    mainLayer.draw();
+    layer.draw();
   }
 });
 
@@ -154,7 +125,7 @@ document.getElementById('lengthInput').addEventListener('input', (e) => {
     selected.width(parseInt(e.target.value));
     updateMeasurement();
     updateStickerPositions();
-    mainLayer.draw();
+    layer.draw();
   }
 });
 
@@ -185,7 +156,7 @@ function updateMeasurement() {
     }));
 
     selected.measurementText = measurement;
-    mainLayer.add(measurement);
+    layer.add(measurement);
   } else {
     selected.measurementText.getText().text(text);
     selected.measurementText.position({
@@ -194,7 +165,7 @@ function updateMeasurement() {
     });
   }
 
-  mainLayer.draw();
+  layer.draw();
 }
 
 // Stickers extremos para estirar
@@ -224,7 +195,7 @@ function showStickers(obj) {
     obj.width(newWidth);
     updateMeasurement();
     updateStickerPositions();
-    mainLayer.draw();
+    layer.draw();
   });
 
   rightSticker.on('dragmove', () => {
@@ -232,13 +203,13 @@ function showStickers(obj) {
     obj.width(newWidth);
     updateMeasurement();
     updateStickerPositions();
-    mainLayer.draw();
+    layer.draw();
   });
 
   stickers.push(leftSticker, rightSticker);
-  mainLayer.add(leftSticker, rightSticker);
+  layer.add(leftSticker, rightSticker);
   updateMeasurement();
-  mainLayer.draw();
+  layer.draw();
 }
 
 function hideStickers() {
@@ -249,7 +220,7 @@ function hideStickers() {
     selected.measurementText.destroy();
     selected.measurementText = null;
   }
-  mainLayer.draw();
+  layer.draw();
 }
 
 function updateStickerPositions() {
@@ -275,7 +246,7 @@ function deselectObject() {
   if (selected) {
     selected.stroke(null);
     selected = null;
-    mainLayer.draw();
+    layer.draw();
   }
 // Ocultar el panel si se hace clic fuera de un muro
 stage.on('click', (e) => {
@@ -296,7 +267,7 @@ stage.on('click', (e) => {
     document.getElementById('object-tools').classList.add('hidden');
     document.getElementById('toolbar').classList.remove('visible');
 
-    mainLayer.draw();
+    layer.draw();
   }
 });
 
