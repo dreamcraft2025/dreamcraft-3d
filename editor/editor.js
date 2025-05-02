@@ -388,7 +388,7 @@ stage.on('wheel', (e) => {
   const newScale = direction > 0 ? oldScale * scaleBy : oldScale / scaleBy;
 
   // Limitar zoom entre 0.2x y 5x
-  const limitedScale = Math.max(0.2, Math.min(newScale, 5));
+  const limitedScale = newScale; // Zoom libre, sin límites
 
   stage.scale({ x: limitedScale, y: limitedScale });
 
