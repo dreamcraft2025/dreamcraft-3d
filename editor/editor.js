@@ -81,64 +81,6 @@ let transformer = null;
 let stickers = [];
 
 
-function detectRooms() {
-  const walls = layer.find('.wall');
-  const rooms = [];
-
-  // Recoger puntos extremos
-  const points = walls.map(w => {
-    const rot = w.rotation();
-    const width = w.width();
-    const height = w.height();
-    const x1 = w.x();
-    const y1 = w.y();
-    const x2 = x1 + Math.cos(rot * Math.PI / 180) * width;
-    const y2 = y1 + Math.sin(rot * Math.PI / 180) * width;
-    return [{ x: x1, y: y1 }, { x: x2, y: y2 }];
-  }).flat();
-
-  // Esta función simple intenta encontrar rectángulos cerrados por 4 muros
-  for (let i = 0; i < points.length; i++) {
-    for (let j = i + 1; j < points.length; j++) {
-      const p1 = points[i];
-      const p2 = points[j];
-      const width = Math.abs(p1.x - p2.x);
-      const height = Math.abs(p1.y - p2.y);
-      if (width > 50 && height > 50) {
-        const area = width * height;
-        const centerX = (p1.x + p2.x) / 2;
-        const centerY = (p1.y + p2.y) / 2;
-        const room = new Konva.Rect({
-          x: Math.min(p1.x, p2.x),
-          y: Math.min(p1.y, p2.y),
-          width,
-          height,
-          fill: 'rgba(255, 255, 0, 0.2)',
-          stroke: 'orange',
-          strokeWidth: 1,
-          listening: false
-        });
-        layer.add(room);
-        rooms.push(room);
-
-        const label = new Konva.Text({
-          x: centerX - 30,
-          y: centerY - 10,
-          text: "Habitación",
-          fontSize: 14,
-          fill: "#444",
-          listening: false
-        });
-        layer.add(label);
-      }
-    }
-  }
-
-  layer.batchDraw();
-}
-
-
-
 function autoJoinWalls(movingWall) {
   const tolerance = 15;
   const allWalls = layer.find('.wall');
@@ -156,61 +98,36 @@ function autoJoinWalls(movingWall) {
     layer.add(guideLine);
   }
 
-  const rotation = movingWall.rotation();
   let snapped = false;
 
-  const movingStart = {
-    x: movingWall.x(),
-    y: movingWall.y()
-  };
+  const startX = movingWall.x();
+  const endX = startX + movingWall.width();
+  const centerY = movingWall.y() + movingWall.height() / 2;
 
-  const movingEnd = {
-    x: movingWall.x() + Math.cos(rotation * Math.PI / 180) * movingWall.width(),
-    y: movingWall.y() + Math.sin(rotation * Math.PI / 180) * movingWall.width()
-  };
+  allWalls.forEach(otherWall => {
+    if (otherWall === movingWall) return;
 
-  allWalls.forEach(other => {
-    if (other === movingWall) return;
+    const otherStartX = otherWall.x();
+    const otherEndX = otherWall.x() + otherWall.width();
+    const otherCenterY = otherWall.y() + otherWall.height() / 2;
 
-    const otherRotation = other.rotation();
-
-    const otherStart = {
-      x: other.x(),
-      y: other.y()
-    };
-
-    const otherEnd = {
-      x: other.x() + Math.cos(otherRotation * Math.PI / 180) * other.width(),
-      y: other.y() + Math.sin(otherRotation * Math.PI / 180) * other.width()
-    };
-
-    const d1 = distance(movingStart, otherStart);
-    const d2 = distance(movingStart, otherEnd);
-    const d3 = distance(movingEnd, otherStart);
-    const d4 = distance(movingEnd, otherEnd);
-
-    if (d1 < tolerance) {
-      movingWall.position({ x: otherStart.x, y: otherStart.y });
-      snapped = true;
-    } else if (d2 < tolerance) {
-      movingWall.position({ x: otherEnd.x - (movingEnd.x - movingStart.x), y: otherEnd.y - (movingEnd.y - movingStart.y) });
-      snapped = true;
-    } else if (d3 < tolerance) {
-      movingWall.position({ x: otherStart.x - (movingEnd.x - movingStart.x), y: otherStart.y - (movingEnd.y - movingStart.y) });
-      snapped = true;
-    } else if (d4 < tolerance) {
-      movingWall.position({ x: otherEnd.x - (movingEnd.x - movingStart.x), y: otherEnd.y - (movingEnd.y - movingStart.y) });
-      snapped = true;
+    if (Math.abs(centerY - otherCenterY) < tolerance) {
+      if (Math.abs(startX - otherEndX) < tolerance) {
+        movingWall.x(otherEndX);
+        movingWall.y(otherWall.y());
+        snapped = true;
+        guideLine.points([otherEndX, 0, otherEndX, stage.height()]);
+      } else if (Math.abs(endX - otherStartX) < tolerance) {
+        movingWall.x(otherStartX - movingWall.width());
+        movingWall.y(otherWall.y());
+        snapped = true;
+        guideLine.points([otherStartX, 0, otherStartX, stage.height()]);
+      }
     }
   });
 
   guideLine.visible(snapped);
-  guideLine.points(snapped ? [movingStart.x, movingStart.y, movingEnd.x, movingEnd.y] : []);
   layer.batchDraw();
-}
-
-function distance(p1, p2) {
-  return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
 }
 
 
@@ -232,9 +149,7 @@ function createWall(x = 50, y = 50, width = 200, height = 15) {
     autoJoinWalls(wall);
   });
 
-    if (
-}
-}wall !== selected) wall.fill("#666666"); // gris oscuro
+    if (wall !== selected) wall.fill("#666666"); // gris oscuro
     layer.draw();
   });
 
@@ -459,7 +374,37 @@ function deselectObject() {
     layer.draw();
   }
 // Ocultar el panel si se hace clic fuera de un muro
+stage.on('click', (e) => {
+  if (!e.target.hasName('wall')) {
+    deselectObject();
+    document.getElementById('toolbar').classList.remove('visible');
+    document.getElementById('object-tools').classList.add('hidden');
+  }
+});
+}
+// Ocultar el panel si se hace clic fuera del muro
+stage.on('click', (e) => {
+  if (e.target === stage || e.target === stage.findOne('Layer')) {
+    if (transformer) transformer.destroy();
+    hideStickers();
+    selected = null;
 
+    document.getElementById('object-tools').classList.add('hidden');
+    document.getElementById('toolbar').classList.remove('visible');
+
+    layer.draw();
+  }
+});
+
+
+
+
+
+
+
+// === PANNING ===
+let isPanning = false;
+let lastDist = { x: 0, y: 0 };
 
 stage.on('mousedown', (e) => {
   // Solo iniciar panning si no se ha hecho clic sobre un objeto Konva
@@ -516,24 +461,3 @@ stage.on('wheel', (e) => {
   stage.position(newPos);
   stage.batchDraw();
 });
-
-
-stage.on('click', (e) => {
-  const clickedOnWall = e.target.hasName && e.target.hasName('wall');
-  if (!clickedOnWall) {
-    if (transformer) transformer.destroy();
-    hideStickers();
-    selected = null;
-    document.getElementById('object-tools').classList.add('hidden');
-    document.getElementById('toolbar').classList.remove('visible');
-    layer.draw();
-  }
-
-// Botón para detectar habitaciones
-const detectBtn = document.createElement('button');
-detectBtn.innerText = 'Detectar habitaciones';
-detectBtn.style.position = 'fixed';
-detectBtn.style.top = '60px';
-detectBtn.style.left = '1rem';
-detectBtn.onclick = detectRooms;
-document.body.appendChild(detectBtn);
