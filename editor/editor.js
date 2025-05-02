@@ -85,7 +85,6 @@ function autoJoinWalls(movingWall) {
   const tolerance = 15;
   const allWalls = layer.find('.wall');
 
-  // Crear una línea guía temporal si no existe
   let guideLine = layer.findOne('#guideLine');
   if (!guideLine) {
     guideLine = new Konva.Line({
@@ -99,37 +98,61 @@ function autoJoinWalls(movingWall) {
     layer.add(guideLine);
   }
 
+  const rotation = movingWall.rotation();
   let snapped = false;
 
-  const startX = movingWall.x();
-  const endX = startX + movingWall.width();
-  const centerY = movingWall.y() + movingWall.height() / 2;
+  const movingStart = {
+    x: movingWall.x(),
+    y: movingWall.y()
+  };
 
-  allWalls.forEach(otherWall => {
-    if (otherWall === movingWall) return;
+  const movingEnd = {
+    x: movingWall.x() + Math.cos(rotation * Math.PI / 180) * movingWall.width(),
+    y: movingWall.y() + Math.sin(rotation * Math.PI / 180) * movingWall.width()
+  };
 
-    const otherStartX = otherWall.x();
-    const otherEndX = otherWall.x() + otherWall.width();
-    const otherCenterY = otherWall.y() + otherWall.height() / 2;
+  allWalls.forEach(other => {
+    if (other === movingWall) return;
 
-    // Solo alinear horizontalmente muros rectos
-    if (Math.abs(centerY - otherCenterY) < tolerance) {
-      if (Math.abs(startX - otherEndX) < tolerance) {
-        movingWall.x(otherEndX);
-        movingWall.y(otherWall.y());
-        snapped = true;
-        guideLine.points([otherEndX, 0, otherEndX, stage.height()]);
-      } else if (Math.abs(endX - otherStartX) < tolerance) {
-        movingWall.x(otherStartX - movingWall.width());
-        movingWall.y(otherWall.y());
-        snapped = true;
-        guideLine.points([otherStartX, 0, otherStartX, stage.height()]);
-      }
+    const otherRotation = other.rotation();
+
+    const otherStart = {
+      x: other.x(),
+      y: other.y()
+    };
+
+    const otherEnd = {
+      x: other.x() + Math.cos(otherRotation * Math.PI / 180) * other.width(),
+      y: other.y() + Math.sin(otherRotation * Math.PI / 180) * other.width()
+    };
+
+    const d1 = distance(movingStart, otherStart);
+    const d2 = distance(movingStart, otherEnd);
+    const d3 = distance(movingEnd, otherStart);
+    const d4 = distance(movingEnd, otherEnd);
+
+    if (d1 < tolerance) {
+      movingWall.position({ x: otherStart.x, y: otherStart.y });
+      snapped = true;
+    } else if (d2 < tolerance) {
+      movingWall.position({ x: otherEnd.x - (movingEnd.x - movingStart.x), y: otherEnd.y - (movingEnd.y - movingStart.y) });
+      snapped = true;
+    } else if (d3 < tolerance) {
+      movingWall.position({ x: otherStart.x - (movingEnd.x - movingStart.x), y: otherStart.y - (movingEnd.y - movingStart.y) });
+      snapped = true;
+    } else if (d4 < tolerance) {
+      movingWall.position({ x: otherEnd.x - (movingEnd.x - movingStart.x), y: otherEnd.y - (movingEnd.y - movingStart.y) });
+      snapped = true;
     }
   });
 
   guideLine.visible(snapped);
+  guideLine.points(snapped ? [movingStart.x, movingStart.y, movingEnd.x, movingEnd.y] : []);
   layer.batchDraw();
+}
+
+function distance(p1, p2) {
+  return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
 }
 
 
@@ -376,37 +399,7 @@ function deselectObject() {
     layer.draw();
   }
 // Ocultar el panel si se hace clic fuera de un muro
-stage.on('click', (e) => {
-  if (!e.target.hasName('wall')) {
-    deselectObject();
-    document.getElementById('toolbar').classList.remove('visible');
-    document.getElementById('object-tools').classList.add('hidden');
-  }
-});
-}
-// Ocultar el panel si se hace clic fuera del muro
-stage.on('click', (e) => {
-  if (e.target === stage || e.target === stage.findOne('Layer')) {
-    if (transformer) transformer.destroy();
-    hideStickers();
-    selected = null;
 
-    document.getElementById('object-tools').classList.add('hidden');
-    document.getElementById('toolbar').classList.remove('visible');
-
-    layer.draw();
-  }
-});
-
-
-
-
-
-
-
-// === PANNING ===
-let isPanning = false;
-let lastDist = { x: 0, y: 0 };
 
 stage.on('mousedown', (e) => {
   // Solo iniciar panning si no se ha hecho clic sobre un objeto Konva
@@ -462,4 +455,17 @@ stage.on('wheel', (e) => {
 
   stage.position(newPos);
   stage.batchDraw();
+});
+
+
+stage.on('click', (e) => {
+  const clickedOnWall = e.target.hasName && e.target.hasName('wall');
+  if (!clickedOnWall) {
+    if (transformer) transformer.destroy();
+    hideStickers();
+    selected = null;
+    document.getElementById('object-tools').classList.add('hidden');
+    document.getElementById('toolbar').classList.remove('visible');
+    layer.draw();
+  }
 });
