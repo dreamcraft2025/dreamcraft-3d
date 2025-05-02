@@ -405,3 +405,30 @@ stage.on('wheel', (e) => {
   stage.position(newPos);
   stage.batchDraw();
 });
+
+
+document.getElementById("addWall").addEventListener("click", function() {
+  const center = {
+    x: (stage.width() / 2 - stage.x()) / stage.scaleX(),
+    y: (stage.height() / 2 - stage.y()) / stage.scaleY()
+  };
+
+  const wall = new Konva.Rect({
+    x: center.x,
+    y: center.y,
+    width: 100,
+    height: 20,
+    fill: 'gray',
+    draggable: true
+  });
+
+  // Asegurar que haya una capa para agregar el muro
+  let objectLayer = stage.findOne('.object-layer');
+  if (!objectLayer) {
+    objectLayer = new Konva.Layer({ name: 'object-layer' });
+    stage.add(objectLayer);
+  }
+
+  objectLayer.add(wall);
+  objectLayer.draw();
+});
