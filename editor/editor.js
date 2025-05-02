@@ -408,42 +408,77 @@ stage.on('wheel', (e) => {
 
 
 
-
-  // Asegurar que haya una capa para agregar el muro
-  let objectLayer = stage.findOne('.object-layer');
-  if (!objectLayer) {
-    objectLayer = new Konva.Layer({ name: 'object-layer' });
-    stage.add(objectLayer);
+// --- Unión automática de muros --- //
+function areEndsClose(rect1, rect2, threshold = 10) {
+  const ends1 = [
+    { x: rect1.x(), y: rect1.y() },
+    { x: rect1.x() + rect1.width(), y: rect1.y() + rect1.height() }
+  ];
+  const ends2 = [
+    { x: rect2.x(), y: rect2.y() },
+    { x: rect2.x() + rect2.width(), y: rect2.y() + rect2.height() }
+  ];
+  for (let p1 of ends1) {
+    for (let p2 of ends2) {
+      const dx = p1.x - p2.x;
+      const dy = p1.y - p2.y;
+      if (Math.sqrt(dx * dx + dy * dy) < threshold) {
+        return { match: true, p1, p2 };
+      }
+    }
   }
+  return { match: false };
+}
 
-  objectLayer.add(wall);
-  objectLayer.draw();
-});
+const guideLayer = new Konva.Layer();
+stage.add(guideLayer);
 
+function showGuide(p1, p2) {
+  guideLayer.destroyChildren();
+  const line = new Konva.Line({
+    points: [p1.x, p1.y, p2.x, p2.y],
+    stroke: 'red',
+    strokeWidth: 2,
+    dash: [4, 4]
+  });
+  guideLayer.add(line);
+  guideLayer.batchDraw();
+}
 
-document.getElementById("addWall").addEventListener("click", function() {
-  const container = document.getElementById('stage-container');
-  const center = {
-    x: (container.offsetWidth / 2 - stage.x()) / stage.scaleX(),
-    y: (container.offsetHeight / 2 - stage.y()) / stage.scaleY()
-  };
+function clearGuide() {
+  guideLayer.destroyChildren();
+  guideLayer.batchDraw();
+}
 
-  const wall = new Konva.Rect({
-    x: center.x,
-    y: center.y,
-    width: 100,
-    height: 20,
-    fill: 'gray',
-    draggable: true
+// Hookear muros existentes
+function hookWallEvents(wall, allWalls) {
+  wall.on('dragmove', () => {
+    clearGuide();
+    for (let other of allWalls) {
+      if (other === wall) continue;
+      const { match, p1, p2 } = areEndsClose(wall, other);
+      if (match) {
+        wall.position({
+          x: wall.x() + (p2.x - p1.x),
+          y: wall.y() + (p2.y - p1.y)
+        });
+        wall.getLayer().batchDraw();
+        showGuide(p1, p2);
+        break;
+      }
+    }
   });
 
-  // Asegurar que haya una capa para agregar el muro
-  let objectLayer = stage.findOne('.object-layer');
-  if (!objectLayer) {
-    objectLayer = new Konva.Layer({ name: 'object-layer' });
-    stage.add(objectLayer);
-  }
+  wall.on('dragend', () => {
+    clearGuide();
+  });
+}
 
-  objectLayer.add(wall);
-  objectLayer.draw();
-});
+// Aplicar a todos los muros
+function hookAllWalls() {
+  const walls = stage.find('.wall');
+  walls.forEach(w => hookWallEvents(w, walls));
+}
+
+stage.on('contentReady', hookAllWalls); // Evento personalizado si se requiere
+setTimeout(hookAllWalls, 1000); // fallback inicial
