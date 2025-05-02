@@ -82,32 +82,54 @@ let stickers = [];
 
 
 function autoJoinWalls(movingWall) {
-  const tolerance = 10;
+  const tolerance = 15;
   const allWalls = layer.find('.wall');
 
-  const movingStart = { x: movingWall.x(), y: movingWall.y() };
-  const movingEnd = { x: movingWall.x() + movingWall.width(), y: movingWall.y() + movingWall.height() };
+  // Crear una línea guía temporal si no existe
+  let guideLine = layer.findOne('#guideLine');
+  if (!guideLine) {
+    guideLine = new Konva.Line({
+      id: 'guideLine',
+      stroke: 'green',
+      strokeWidth: 2,
+      dash: [4, 4],
+      visible: false,
+      points: []
+    });
+    layer.add(guideLine);
+  }
+
+  let snapped = false;
+
+  const startX = movingWall.x();
+  const endX = startX + movingWall.width();
+  const centerY = movingWall.y() + movingWall.height() / 2;
 
   allWalls.forEach(otherWall => {
     if (otherWall === movingWall) return;
 
-    const otherStart = { x: otherWall.x(), y: otherWall.y() };
-    const otherEnd = { x: otherWall.x() + otherWall.width(), y: otherWall.y() + otherWall.height() };
+    const otherStartX = otherWall.x();
+    const otherEndX = otherWall.x() + otherWall.width();
+    const otherCenterY = otherWall.y() + otherWall.height() / 2;
 
-    if (distance(movingStart, otherStart) < tolerance) {
-      movingWall.position({ x: otherWall.x(), y: otherWall.y() });
-    } else if (distance(movingStart, otherEnd) < tolerance) {
-      movingWall.position({ x: otherEnd.x() - movingWall.width(), y: otherEnd.y() - movingWall.height() });
-    } else if (distance(movingEnd, otherStart) < tolerance) {
-      movingWall.position({ x: otherStart.x() - movingWall.width(), y: otherStart.y() - movingWall.height() });
-    } else if (distance(movingEnd, otherEnd) < tolerance) {
-      movingWall.position({ x: otherEnd.x() - movingWall.width(), y: otherEnd.y() - movingWall.height() });
+    // Solo alinear horizontalmente muros rectos
+    if (Math.abs(centerY - otherCenterY) < tolerance) {
+      if (Math.abs(startX - otherEndX) < tolerance) {
+        movingWall.x(otherEndX);
+        movingWall.y(otherWall.y());
+        snapped = true;
+        guideLine.points([otherEndX, 0, otherEndX, stage.height()]);
+      } else if (Math.abs(endX - otherStartX) < tolerance) {
+        movingWall.x(otherStartX - movingWall.width());
+        movingWall.y(otherWall.y());
+        snapped = true;
+        guideLine.points([otherStartX, 0, otherStartX, stage.height()]);
+      }
     }
   });
-}
 
-function distance(p1, p2) {
-  return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
+  guideLine.visible(snapped);
+  layer.batchDraw();
 }
 
 
