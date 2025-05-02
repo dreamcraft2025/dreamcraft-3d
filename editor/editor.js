@@ -147,7 +147,7 @@ function createWall(x = 50, y = 50, width = 200, height = 15) {
 
   wall.on('mouseover', () => {
 
-  wall.on('dragend', () => {
+  wall.on('dragmove', () => {
     autoJoinWalls(wall);
   });
 
