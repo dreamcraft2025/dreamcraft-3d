@@ -82,62 +82,63 @@ let stickers = [];
 
 
 function autoJoinWalls(movingWall) {
-  const tolerance = 15;
+  const tolerance = 10;
   const allWalls = layer.find('.wall');
 
-  let snapped = false;
+  const movingPoints = getWallEndpoints(movingWall);
 
-  // Obtener los puntos extremos del muro en movimiento
-  const movingStart = {
-    x: movingWall.x(),
-    y: movingWall.y()
-  };
-  const movingEnd = {
-    x: movingWall.x() + movingWall.width() * Math.cos(movingWall.rotation() * Math.PI / 180),
-    y: movingWall.y() + movingWall.width() * Math.sin(movingWall.rotation() * Math.PI / 180)
-  };
+  for (let otherWall of allWalls) {
+    if (otherWall === movingWall) continue;
 
-  allWalls.forEach(otherWall => {
-    if (otherWall === movingWall) return;
+    const otherPoints = getWallEndpoints(otherWall);
 
-    const otherStart = {
-      x: otherWall.x(),
-      y: otherWall.y()
-    };
-    const otherEnd = {
-      x: otherWall.x() + otherWall.width() * Math.cos(otherWall.rotation() * Math.PI / 180),
-      y: otherWall.y() + otherWall.width() * Math.sin(otherWall.rotation() * Math.PI / 180)
-    };
+    for (let i = 0; i < 2; i++) {
+      for (let j = 0; j < 2; j++) {
+        const dist = getDistance(movingPoints[i], otherPoints[j]);
 
-    const distanceStartToStart = Math.hypot(movingStart.x - otherStart.x, movingStart.y - otherStart.y);
-    const distanceStartToEnd = Math.hypot(movingStart.x - otherEnd.x, movingStart.y - otherEnd.y);
-    const distanceEndToStart = Math.hypot(movingEnd.x - otherStart.x, movingEnd.y - otherStart.y);
-    const distanceEndToEnd = Math.hypot(movingEnd.x - otherEnd.x, movingEnd.y - otherEnd.y);
-
-    if (distanceStartToStart < tolerance) {
-      movingWall.x(otherStart.x);
-      movingWall.y(otherStart.y);
-      snapped = true;
-    } else if (distanceStartToEnd < tolerance) {
-      movingWall.x(otherEnd.x);
-      movingWall.y(otherEnd.y);
-      snapped = true;
-    } else if (distanceEndToStart < tolerance) {
-      const dx = otherStart.x - (movingWall.width() * Math.cos(movingWall.rotation() * Math.PI / 180));
-      const dy = otherStart.y - (movingWall.width() * Math.sin(movingWall.rotation() * Math.PI / 180));
-      movingWall.x(dx);
-      movingWall.y(dy);
-      snapped = true;
-    } else if (distanceEndToEnd < tolerance) {
-      const dx = otherEnd.x - (movingWall.width() * Math.cos(movingWall.rotation() * Math.PI / 180));
-      const dy = otherEnd.y - (movingWall.width() * Math.sin(movingWall.rotation() * Math.PI / 180));
-      movingWall.x(dx);
-      movingWall.y(dy);
-      snapped = true;
+        if (dist < tolerance) {
+          const dx = otherPoints[j].x - movingPoints[i].x;
+          const dy = otherPoints[j].y - movingPoints[i].y;
+          movingWall.x(movingWall.x() + dx);
+          movingWall.y(movingWall.y() + dy);
+          return; // una sola unión por vez
+        }
+      }
     }
-  });
+  }
+}
 
-  layer.batchDraw();
+function getWallEndpoints(wall) {
+  const x = wall.x();
+  const y = wall.y();
+  const width = wall.width();
+  const height = wall.height();
+  const rotation = Konva.getAngle(wall.rotation());
+
+  const offsetY = height / 2;
+
+  const p1 = rotatePoint({ x: x, y: y + offsetY }, rotation, x, y);
+  const p2 = rotatePoint({ x: x + width, y: y + offsetY }, rotation, x, y);
+
+  return [p1, p2];
+}
+
+function rotatePoint(point, angle, originX, originY) {
+  const rad = (Math.PI / 180) * angle;
+  const cos = Math.cos(rad);
+  const sin = Math.sin(rad);
+
+  const dx = point.x - originX;
+  const dy = point.y - originY;
+
+  return {
+    x: originX + dx * cos - dy * sin,
+    y: originY + dx * sin + dy * cos
+  };
+}
+
+function getDistance(p1, p2) {
+  return Math.sqrt((p1.x - p2.x) ** 2 + (p1.y - p2.y) ** 2);
 });
 
 // Rotar objeto
@@ -148,57 +149,6 @@ document.getElementById('rotateObject').addEventListener('click', () => {
     updateStickerPositions();
     layer.draw();
   }
-
-
-  // --- Nueva lógica angular ---
-  const angleTolerance = 15;
-  const movingStart = {
-    x: movingWall.x(),
-    y: movingWall.y()
-  };
-  const movingEnd = {
-    x: movingWall.x() + movingWall.width() * Math.cos(movingWall.rotation() * Math.PI / 180),
-    y: movingWall.y() + movingWall.width() * Math.sin(movingWall.rotation() * Math.PI / 180)
-  };
-
-  allWalls.forEach(otherWall => {
-    if (otherWall === movingWall) return;
-
-    const otherStart = {
-      x: otherWall.x(),
-      y: otherWall.y()
-    };
-    const otherEnd = {
-      x: otherWall.x() + otherWall.width() * Math.cos(otherWall.rotation() * Math.PI / 180),
-      y: otherWall.y() + otherWall.width() * Math.sin(otherWall.rotation() * Math.PI / 180)
-    };
-
-    const snap = (a, b) => Math.hypot(a.x - b.x, a.y - b.y) < angleTolerance;
-
-    if (snap(movingStart, otherStart)) {
-      movingWall.x(otherStart.x);
-      movingWall.y(otherStart.y);
-      snapped = true;
-    } else if (snap(movingStart, otherEnd)) {
-      movingWall.x(otherEnd.x);
-      movingWall.y(otherEnd.y);
-      snapped = true;
-    } else if (snap(movingEnd, otherStart)) {
-      const dx = otherStart.x - (movingWall.width() * Math.cos(movingWall.rotation() * Math.PI / 180));
-      const dy = otherStart.y - (movingWall.width() * Math.sin(movingWall.rotation() * Math.PI / 180));
-      movingWall.x(dx);
-      movingWall.y(dy);
-      snapped = true;
-    } else if (snap(movingEnd, otherEnd)) {
-      const dx = otherEnd.x - (movingWall.width() * Math.cos(movingWall.rotation() * Math.PI / 180));
-      const dy = otherEnd.y - (movingWall.width() * Math.sin(movingWall.rotation() * Math.PI / 180));
-      movingWall.x(dx);
-      movingWall.y(dy);
-      snapped = true;
-    }
-  });
-  // --- Fin nueva lógica angular ---
-
 });
 
 // Duplicar objeto
