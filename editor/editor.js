@@ -84,57 +84,37 @@ let stickers = [];
 function autoJoinWalls(movingWall) {
   const tolerance = 10;
   const allWalls = layer.find('.wall');
-
-  const movingPoints = getWallEndpoints(movingWall);
+  const movingPoints = getGlobalEndpoints(movingWall);
 
   for (let otherWall of allWalls) {
     if (otherWall === movingWall) continue;
 
-    const otherPoints = getWallEndpoints(otherWall);
+    const otherPoints = getGlobalEndpoints(otherWall);
 
     for (let i = 0; i < 2; i++) {
       for (let j = 0; j < 2; j++) {
         const dist = getDistance(movingPoints[i], otherPoints[j]);
-
         if (dist < tolerance) {
           const dx = otherPoints[j].x - movingPoints[i].x;
           const dy = otherPoints[j].y - movingPoints[i].y;
           movingWall.x(movingWall.x() + dx);
           movingWall.y(movingWall.y() + dy);
-          return; // una sola unión por vez
+          return;
         }
       }
     }
   }
 }
 
-function getWallEndpoints(wall) {
-  const x = wall.x();
-  const y = wall.y();
+function getGlobalEndpoints(wall) {
   const width = wall.width();
   const height = wall.height();
-  const rotation = Konva.getAngle(wall.rotation());
+  const halfHeight = height / 2;
 
-  const offsetY = height / 2;
-
-  const p1 = rotatePoint({ x: x, y: y + offsetY }, rotation, x, y);
-  const p2 = rotatePoint({ x: x + width, y: y + offsetY }, rotation, x, y);
+  const p1 = wall.getAbsoluteTransform().point({ x: 0, y: halfHeight });
+  const p2 = wall.getAbsoluteTransform().point({ x: width, y: halfHeight });
 
   return [p1, p2];
-}
-
-function rotatePoint(point, angle, originX, originY) {
-  const rad = (Math.PI / 180) * angle;
-  const cos = Math.cos(rad);
-  const sin = Math.sin(rad);
-
-  const dx = point.x - originX;
-  const dy = point.y - originY;
-
-  return {
-    x: originX + dx * cos - dy * sin,
-    y: originY + dx * sin + dy * cos
-  };
 }
 
 function getDistance(p1, p2) {
