@@ -82,43 +82,127 @@ let stickers = [];
 
 
 function autoJoinWalls(movingWall) {
-  const tolerance = 10;
+  const SNAP_THRESHOLD = 10;
   const allWalls = layer.find('.wall');
-  const movingPoints = getGlobalEndpoints(movingWall);
 
-  for (let otherWall of allWalls) {
-    if (otherWall === movingWall) continue;
+  const getEndpoints = (line) => {
+    const points = line.points();
+    return [
+      { x: points[0], y: points[1] },
+      { x: points[2], y: points[3] },
+    ];
+  };
 
-    const otherPoints = getGlobalEndpoints(otherWall);
+  const setEndpoint = (line, index, newPoint) => {
+    const pts = [...line.points()];
+    pts[index * 2] = newPoint.x;
+    pts[index * 2 + 1] = newPoint.y;
+    line.points(pts);
+  };
 
-    for (let i = 0; i < 2; i++) {
-      for (let j = 0; j < 2; j++) {
-        const dist = getDistance(movingPoints[i], otherPoints[j]);
-        if (dist < tolerance) {
-          const dx = otherPoints[j].x - movingPoints[i].x;
-          const dy = otherPoints[j].y - movingPoints[i].y;
-          movingWall.x(movingWall.x() + dx);
-          movingWall.y(movingWall.y() + dy);
-          return;
+  const movingPoints = getEndpoints(movingWall);
+
+  allWalls.forEach((otherWall) => {
+    if (otherWall === movingWall) return;
+
+    const otherPoints = getEndpoints(otherWall);
+
+    movingPoints.forEach((mp, i) => {
+      otherPoints.forEach((op) => {
+        const dx = mp.x - op.x;
+        const dy = mp.y - op.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist < SNAP_THRESHOLD) {
+          setEndpoint(movingWall, i, op);
         }
-      }
-    }
+      });
+    });
+  });
+
+  layer.draw();
+}
+
+
+// Crear muro
+function createWall(x = 50, y = 50, width = 200, height = 15) {
+  const wall = new Konva.Rect({
+    x,
+    y,
+    width,
+    height,
+    fill: "#666666",
+    draggable: true,
+    name: 'wall'
+  });
+
+  wall.on('mouseover', () => {
+
+  wall.on('dragmove', () => {
+    autoJoinWalls(wall);
+  });
+
+    if (wall !== selected) wall.fill("#666666"); // gris oscuro
+    layer.draw();
+  });
+
+  wall.on('mouseout', () => {
+    if (wall !== selected) wall.fill("#666666"); // gris oscuro
+    hideStickers();
+    layer.draw();
+  });
+    wall.on('click', () => {
+  selectObject(wall);
+  document.getElementById('toolbar').classList.add('visible');
+});
+
+  wall.on('dragend transformend', () => {
+    updateMeasurement();
+    updateStickerPositions();
+  });
+
+  layer.add(wall);
+  layer.draw();
+  return wall;
+}
+
+// Añadir muro
+document.getElementById('addWall').addEventListener('click', () => {
+  const newWall = createWall();
+  selectObject(newWall);
+});
+
+// Seleccionar objeto
+function selectObject(obj) {
+  selected = obj;
+
+  document.getElementById('object-tools').classList.remove('hidden');
+  document.getElementById('widthInput').value = Math.round(obj.height());
+  document.getElementById('lengthInput').value = Math.round(obj.width());
+
+  if (transformer) transformer.destroy();
+
+  transformer = new Konva.Transformer({
+    nodes: [obj],
+    enabledAnchors: []
+  });
+
+  layer.add(transformer);
+  layer.draw();
+
+  showStickers(obj);
+}
+
+// Eliminar objeto
+document.getElementById('deleteObject').addEventListener('click', () => {
+  if (selected) {
+    selected.destroy();
+    if (transformer) transformer.destroy();
+    hideStickers();
+    selected = null;
+    document.getElementById('object-tools').classList.add('hidden');
+    layer.draw();
   }
-}
-
-function getGlobalEndpoints(wall) {
-  const width = wall.width();
-  const height = wall.height();
-  const halfHeight = height / 2;
-
-  const p1 = wall.getAbsoluteTransform().point({ x: 0, y: halfHeight });
-  const p2 = wall.getAbsoluteTransform().point({ x: width, y: halfHeight });
-
-  return [p1, p2];
-}
-
-function getDistance(p1, p2) {
-  return Math.sqrt((p1.x - p2.x) ** 2 + (p1.y - p2.y) ** 2);
 });
 
 // Rotar objeto
