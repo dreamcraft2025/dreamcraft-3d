@@ -85,131 +85,59 @@ function autoJoinWalls(movingWall) {
   const tolerance = 15;
   const allWalls = layer.find('.wall');
 
-  let guideLine = layer.findOne('#guideLine');
-  if (!guideLine) {
-    guideLine = new Konva.Line({
-      id: 'guideLine',
-      stroke: 'green',
-      strokeWidth: 2,
-      dash: [4, 4],
-      visible: false,
-      points: []
-    });
-    layer.add(guideLine);
-  }
-
   let snapped = false;
 
-  const startX = movingWall.x();
-  const endX = startX + movingWall.width();
-  const centerY = movingWall.y() + movingWall.height() / 2;
+  // Obtener los puntos extremos del muro en movimiento
+  const movingStart = {
+    x: movingWall.x(),
+    y: movingWall.y()
+  };
+  const movingEnd = {
+    x: movingWall.x() + movingWall.width() * Math.cos(movingWall.rotation() * Math.PI / 180),
+    y: movingWall.y() + movingWall.width() * Math.sin(movingWall.rotation() * Math.PI / 180)
+  };
 
   allWalls.forEach(otherWall => {
     if (otherWall === movingWall) return;
 
-    const otherStartX = otherWall.x();
-    const otherEndX = otherWall.x() + otherWall.width();
-    const otherCenterY = otherWall.y() + otherWall.height() / 2;
+    const otherStart = {
+      x: otherWall.x(),
+      y: otherWall.y()
+    };
+    const otherEnd = {
+      x: otherWall.x() + otherWall.width() * Math.cos(otherWall.rotation() * Math.PI / 180),
+      y: otherWall.y() + otherWall.width() * Math.sin(otherWall.rotation() * Math.PI / 180)
+    };
 
-    if (Math.abs(centerY - otherCenterY) < tolerance) {
-      if (Math.abs(startX - otherEndX) < tolerance) {
-        movingWall.x(otherEndX);
-        movingWall.y(otherWall.y());
-        snapped = true;
-        guideLine.points([otherEndX, 0, otherEndX, stage.height()]);
-      } else if (Math.abs(endX - otherStartX) < tolerance) {
-        movingWall.x(otherStartX - movingWall.width());
-        movingWall.y(otherWall.y());
-        snapped = true;
-        guideLine.points([otherStartX, 0, otherStartX, stage.height()]);
-      }
+    const distanceStartToStart = Math.hypot(movingStart.x - otherStart.x, movingStart.y - otherStart.y);
+    const distanceStartToEnd = Math.hypot(movingStart.x - otherEnd.x, movingStart.y - otherEnd.y);
+    const distanceEndToStart = Math.hypot(movingEnd.x - otherStart.x, movingEnd.y - otherStart.y);
+    const distanceEndToEnd = Math.hypot(movingEnd.x - otherEnd.x, movingEnd.y - otherEnd.y);
+
+    if (distanceStartToStart < tolerance) {
+      movingWall.x(otherStart.x);
+      movingWall.y(otherStart.y);
+      snapped = true;
+    } else if (distanceStartToEnd < tolerance) {
+      movingWall.x(otherEnd.x);
+      movingWall.y(otherEnd.y);
+      snapped = true;
+    } else if (distanceEndToStart < tolerance) {
+      const dx = otherStart.x - (movingWall.width() * Math.cos(movingWall.rotation() * Math.PI / 180));
+      const dy = otherStart.y - (movingWall.width() * Math.sin(movingWall.rotation() * Math.PI / 180));
+      movingWall.x(dx);
+      movingWall.y(dy);
+      snapped = true;
+    } else if (distanceEndToEnd < tolerance) {
+      const dx = otherEnd.x - (movingWall.width() * Math.cos(movingWall.rotation() * Math.PI / 180));
+      const dy = otherEnd.y - (movingWall.width() * Math.sin(movingWall.rotation() * Math.PI / 180));
+      movingWall.x(dx);
+      movingWall.y(dy);
+      snapped = true;
     }
   });
 
-  guideLine.visible(snapped);
   layer.batchDraw();
-}
-
-
-// Crear muro
-function createWall(x = 50, y = 50, width = 200, height = 15) {
-  const wall = new Konva.Rect({
-    x,
-    y,
-    width,
-    height,
-    fill: "#666666",
-    draggable: true,
-    name: 'wall'
-  });
-
-  wall.on('mouseover', () => {
-
-  wall.on('dragmove', () => {
-    autoJoinWalls(wall);
-  });
-
-    if (wall !== selected) wall.fill("#666666"); // gris oscuro
-    layer.draw();
-  });
-
-  wall.on('mouseout', () => {
-    if (wall !== selected) wall.fill("#666666"); // gris oscuro
-    hideStickers();
-    layer.draw();
-  });
-    wall.on('click', () => {
-  selectObject(wall);
-  document.getElementById('toolbar').classList.add('visible');
-});
-
-  wall.on('dragend transformend', () => {
-    updateMeasurement();
-    updateStickerPositions();
-  });
-
-  layer.add(wall);
-  layer.draw();
-  return wall;
-}
-
-// Añadir muro
-document.getElementById('addWall').addEventListener('click', () => {
-  const newWall = createWall();
-  selectObject(newWall);
-});
-
-// Seleccionar objeto
-function selectObject(obj) {
-  selected = obj;
-
-  document.getElementById('object-tools').classList.remove('hidden');
-  document.getElementById('widthInput').value = Math.round(obj.height());
-  document.getElementById('lengthInput').value = Math.round(obj.width());
-
-  if (transformer) transformer.destroy();
-
-  transformer = new Konva.Transformer({
-    nodes: [obj],
-    enabledAnchors: []
-  });
-
-  layer.add(transformer);
-  layer.draw();
-
-  showStickers(obj);
-}
-
-// Eliminar objeto
-document.getElementById('deleteObject').addEventListener('click', () => {
-  if (selected) {
-    selected.destroy();
-    if (transformer) transformer.destroy();
-    hideStickers();
-    selected = null;
-    document.getElementById('object-tools').classList.add('hidden');
-    layer.draw();
-  }
 });
 
 // Rotar objeto
