@@ -148,6 +148,57 @@ document.getElementById('rotateObject').addEventListener('click', () => {
     updateStickerPositions();
     layer.draw();
   }
+
+
+  // --- Nueva lógica angular ---
+  const angleTolerance = 15;
+  const movingStart = {
+    x: movingWall.x(),
+    y: movingWall.y()
+  };
+  const movingEnd = {
+    x: movingWall.x() + movingWall.width() * Math.cos(movingWall.rotation() * Math.PI / 180),
+    y: movingWall.y() + movingWall.width() * Math.sin(movingWall.rotation() * Math.PI / 180)
+  };
+
+  allWalls.forEach(otherWall => {
+    if (otherWall === movingWall) return;
+
+    const otherStart = {
+      x: otherWall.x(),
+      y: otherWall.y()
+    };
+    const otherEnd = {
+      x: otherWall.x() + otherWall.width() * Math.cos(otherWall.rotation() * Math.PI / 180),
+      y: otherWall.y() + otherWall.width() * Math.sin(otherWall.rotation() * Math.PI / 180)
+    };
+
+    const snap = (a, b) => Math.hypot(a.x - b.x, a.y - b.y) < angleTolerance;
+
+    if (snap(movingStart, otherStart)) {
+      movingWall.x(otherStart.x);
+      movingWall.y(otherStart.y);
+      snapped = true;
+    } else if (snap(movingStart, otherEnd)) {
+      movingWall.x(otherEnd.x);
+      movingWall.y(otherEnd.y);
+      snapped = true;
+    } else if (snap(movingEnd, otherStart)) {
+      const dx = otherStart.x - (movingWall.width() * Math.cos(movingWall.rotation() * Math.PI / 180));
+      const dy = otherStart.y - (movingWall.width() * Math.sin(movingWall.rotation() * Math.PI / 180));
+      movingWall.x(dx);
+      movingWall.y(dy);
+      snapped = true;
+    } else if (snap(movingEnd, otherEnd)) {
+      const dx = otherEnd.x - (movingWall.width() * Math.cos(movingWall.rotation() * Math.PI / 180));
+      const dy = otherEnd.y - (movingWall.width() * Math.sin(movingWall.rotation() * Math.PI / 180));
+      movingWall.x(dx);
+      movingWall.y(dy);
+      snapped = true;
+    }
+  });
+  // --- Fin nueva lógica angular ---
+
 });
 
 // Duplicar objeto
