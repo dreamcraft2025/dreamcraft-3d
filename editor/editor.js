@@ -35,8 +35,16 @@ stage.add(gridLayer);
 
 
 // --- INFINITE GRID CONFIG (MEJORADA) ---
+let showGrid = true;
+const gridColor = '#e0e0e0';
+
 function drawGrid() {
   gridLayer.destroyChildren();
+  if (!showGrid) {
+    gridLayer.batchDraw();
+    return;
+  }
+
   const viewPos = stage.position();
   const stageWidth = stage.width();
   const stageHeight = stage.height();
@@ -460,4 +468,11 @@ stage.on('wheel', (e) => {
 
   stage.position(newPos);
   stage.batchDraw();
+});
+
+
+// Botón para mostrar/ocultar la rejilla
+document.getElementById('toggle-grid-btn').addEventListener('click', () => {
+  showGrid = !showGrid;
+  drawGrid();
 });
