@@ -113,3 +113,34 @@ button {
 button:hover {
   background-color: #e0e0e0;
 }
+
+
+#toolbar {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background-color: #fdfdfd;
+  border-bottom: 1px solid #ddd;
+  gap: 10px;
+}
+
+#toolbar button {
+  font-size: 18px;
+  padding: 4px 8px;
+  background-color: transparent;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+#toolbar button:hover {
+  background-color: #e0e0e0;
+}
+
+#toolbar .logo {
+  font-weight: bold;
+  font-size: 16px;
+  margin-left: auto;
+  color: #444;
+}
