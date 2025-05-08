@@ -8,9 +8,16 @@
 <link href="editor.css?v=2" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/konva@9/konva.min.js"></script>
 </head>
-<body><div id="navBar">
-<span id="projectName">DreamCraft 3D</span>
-<button id="addWall">Añadir muro</button></div>
+<body>
+
+<header id="top-bar">
+  <div class="top-left">
+    <button id="add-wall-btn" title="Añadir muro">＋</button>
+    <button id="toggle-grid-btn" title="Mostrar/Ocultar rejilla">#</button>
+  </div>
+  <div class="top-title">DreamCraft 3D</div>
+</header>
+
 <!-- Botón siempre visible -->
 <div id="fixed-controls">
 </div>
