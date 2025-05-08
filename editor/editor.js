@@ -82,45 +82,52 @@ let stickers = [];
 
 
 function autoJoinWalls(movingWall) {
-  const SNAP_THRESHOLD = 10;
+  const tolerance = 15;
   const allWalls = layer.find('.wall');
 
-  const getEndpoints = (line) => {
-    const points = line.points();
-    return [
-      { x: points[0], y: points[1] },
-      { x: points[2], y: points[3] },
-    ];
-  };
+  let guideLine = layer.findOne('#guideLine');
+  if (!guideLine) {
+    guideLine = new Konva.Line({
+      id: 'guideLine',
+      stroke: 'green',
+      strokeWidth: 2,
+      dash: [4, 4],
+      visible: false,
+      points: []
+    });
+    layer.add(guideLine);
+  }
 
-  const setEndpoint = (line, index, newPoint) => {
-    const pts = [...line.points()];
-    pts[index * 2] = newPoint.x;
-    pts[index * 2 + 1] = newPoint.y;
-    line.points(pts);
-  };
+  let snapped = false;
 
-  const movingPoints = getEndpoints(movingWall);
+  const startX = movingWall.x();
+  const endX = startX + movingWall.width();
+  const centerY = movingWall.y() + movingWall.height() / 2;
 
-  allWalls.forEach((otherWall) => {
+  allWalls.forEach(otherWall => {
     if (otherWall === movingWall) return;
 
-    const otherPoints = getEndpoints(otherWall);
+    const otherStartX = otherWall.x();
+    const otherEndX = otherWall.x() + otherWall.width();
+    const otherCenterY = otherWall.y() + otherWall.height() / 2;
 
-    movingPoints.forEach((mp, i) => {
-      otherPoints.forEach((op) => {
-        const dx = mp.x - op.x;
-        const dy = mp.y - op.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-
-        if (dist < SNAP_THRESHOLD) {
-          setEndpoint(movingWall, i, op);
-        }
-      });
-    });
+    if (Math.abs(centerY - otherCenterY) < tolerance) {
+      if (Math.abs(startX - otherEndX) < tolerance) {
+        movingWall.x(otherEndX);
+        movingWall.y(otherWall.y());
+        snapped = true;
+        guideLine.points([otherEndX, 0, otherEndX, stage.height()]);
+      } else if (Math.abs(endX - otherStartX) < tolerance) {
+        movingWall.x(otherStartX - movingWall.width());
+        movingWall.y(otherWall.y());
+        snapped = true;
+        guideLine.points([otherStartX, 0, otherStartX, stage.height()]);
+      }
+    }
   });
 
-  layer.draw();
+  guideLine.visible(snapped);
+  layer.batchDraw();
 }
 
 
